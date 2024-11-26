@@ -1,32 +1,26 @@
 const studentModal=require('../../modal/StudentModal')
-const nodemailer=require('nodemailer');
 const bcrypt=require('bcrypt');
 const jwttoken=require('jsonwebtoken');
-const UserModal=require('../../modal/UserModal')
+const UserModal=require('../../modal/UserModal');
+const user_schema = require('../../modal/UserModal');
 
 exports.homepage= async(req,res)=>{
     res.send("Welcome to Home routes");
 }
 
 exports.userRegister= async (req ,res)=>{    
-    // console.log(req.body);
-    // res.send("Register Controller");
-
     const {gst_no,pan_no,firm_name,user_name,mobile_no,email,password}=req.body;
     if(gst_no=="" || firm_name=="" || user_name=="" || mobile_no=="" || email=="" || password=="" ){
         return res.status(409).json({status:0,msg:'All field are Required'}); 
     }
-    
     const salthRound=10;
     const hashPassword=await bcrypt.hash(password,salthRound);
-   
     try{
-      
         let userData=new UserModal({gst_no,pan_no,firm_name,user_name,mobile_no,email,password:hashPassword})        
         const userResponse = await userData.save()
         .then((insertdata)=>{
             // send mail
-            res.send({ status: 1, msg: `Register successfull`});
+            res.status(200).json({ status: 1, message: `Register successfull`});
         })
         
     }catch(error){
@@ -64,18 +58,22 @@ exports.userRegister= async (req ,res)=>{
     
 // }
 
-// exports.ListofStudent = async (req,res)=>{
-//     try{
-//         const userdata= await studentSchema.find();
-//         if(userdata.length>0){
-//             return res.status(200).json({status:1,userdata})
-//         }else{
-//             return res.status(200).json({status:0,msg:"Student Not Avilable"})
-//         }        
-//     }catch(error){
-//         return res.status(404).json({status:0,msg:"Something went to wrong Please try again"})
-//     }
-// }
+exports.ListofStudent = async (req,res)=>{
+    try{
+        const userdata= await user_schema.find();
+        if(userdata.length>0){
+            return res.status(200).json({status:1,userdata})
+        }else{
+            return res.status(200).json({status:0,msg:"Student Not Avilable"})
+        }        
+    }catch(error){
+        return res.status(404).json({status:0,msg:"Something went to wrong Please try again"})
+    }
+}
+
+exports.LoginUser=async(req,res)=>{
+    res.send("this is login controller");
+}
 
 // exports.StudentInfoById=async (req,res)=>{
 //     const{studentId}=req.body
