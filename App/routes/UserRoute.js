@@ -8,4 +8,5 @@ router.post('/register',UserController.userRegister);
 router.get('/user-list',UserController.ListofStudent);
 router.post('/login-user',UserController.LoginUser);
 
+
 module.exports=router

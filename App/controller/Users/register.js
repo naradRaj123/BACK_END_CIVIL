@@ -33,7 +33,7 @@ exports.userRegister= async (req ,res)=>{
 }
 
 // exports.verifyOtp=async (req,res)=>{
-//     let {email,otp}=req.body;
+    //     let {email,otp}=req.body;
 //     if(!otp){
 //         return res.status(404).json({status:0,msg:"Please Enter Otp"})
 //     }
@@ -55,7 +55,7 @@ exports.userRegister= async (req ,res)=>{
 //             return res.status(409).json({status:0,msg:"Please Enter Valid Otp"})
 //         }
 //     }
-    
+
 // }
 
 exports.ListofStudent = async (req,res)=>{
@@ -72,15 +72,43 @@ exports.ListofStudent = async (req,res)=>{
 }
 
 exports.LoginUser=async(req,res)=>{
-    res.send("this is login controller");
+    console.log(req.body)
+    const {email,password}=req.body;
+    try{
+        if(email==""){
+            return res.status(404).json({status:0,message:"Email required"});
+        }
+        if(password==""){
+            return res.status(404).json({status:0,message:"Password required"});
+        }
+        
+        const userData=await user_schema.findOne({email});
+        if(userData){
+            console.log(userData.password)
+            let user_password=await bcrypt.compareSync(password,userData.password)
+            console.log(user_password)
+            if(user_password){
+                return  res.status(200).json({status:1,message:"Sucessfully Login"})
+            }else{
+                return  res.status(404).json({status:0,message:"Password Not match "})
+            }
+            
+        }else{
+            return res.status(404).json({status:0,message:"User Not Found"})
+        }
+                
+    }catch(error){
+        return res.status(500).json({status:0,message:"Something went Wrong try Sometime"});
+    }
+    
 }
 
 // exports.StudentInfoById=async (req,res)=>{
-//     const{studentId}=req.body
+    //     const{studentId}=req.body
 //     try{
-        
+
 //         console.log("this is body",studentId);
-        
+
 //         // console.log(userData);
 //         if (!studentId) {
 //             return res.status(400).json({status: 0,message: "Please provide a  Student ID.",});
@@ -89,20 +117,20 @@ exports.LoginUser=async(req,res)=>{
 //         if (!userData) {
 //             return res.status(404).json({status: 0,message: "Student not found. Please check the ID.",});
 //         }
-       
+
 //         return res.status(200).json({status: 1,userData,});
-        
+
 //     }catch(error){
 //         // console.error("Error fetching student data:", error.message); 
 //         if(error.value._id){
 //             return res.status(500).json({status: 0,message: "Invalid Student ID"});
 //         }
-    
+
 //     }
 // }
 
 // exports.LoginStudentByNumber=async(req,res)=>{
-//     const {mobileNo,otp}=req.body;
+    //     const {mobileNo,otp}=req.body;
 
 //     try{
 
