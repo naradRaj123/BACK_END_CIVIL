@@ -4,6 +4,10 @@ const bcrypt=require('bcrypt');
 const jwttoken=require('jsonwebtoken');
 const UserModal=require('../../modal/UserModal')
 
+exports.homepage= async(req,res)=>{
+    res.send("Welcome to Home routes");
+}
+
 exports.userRegister= async (req ,res)=>{    
     // console.log(req.body);
     // res.send("Register Controller");
