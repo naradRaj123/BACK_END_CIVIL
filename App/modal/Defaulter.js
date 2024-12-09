@@ -1,0 +1,75 @@
+const mongooes=require('mongoose');
+
+const DefaulterSchema=new mongooes.Schema({
+    user_id:{
+        type:String,
+        require:true,
+        default:null
+    },
+    defaulter_name:{
+        type:String,
+        require:true,
+        default:null,
+    },
+    firm_name:{
+        type:String,
+        require:true,
+        default:null
+    },
+    mobile_No:{
+        type:Number,
+        require:true,
+        unqiue:true,
+        default:null
+    },
+    gst_no:{
+        type:String,
+        require:true,
+    },
+    pand_card_no:{
+        type:String,
+        require:true,
+    },
+    aadhar_card:{
+        type:Number,
+        require:true,
+    },
+    pending_amount:{
+        type:Number,
+        require:true,
+    },
+    address:{
+        type:String,
+        require:true,
+    },
+    city:{
+        type:String,
+        require:true,
+    },
+    state:{
+        type:String,
+        require:true
+    },
+    remark:{
+        type:String,
+        default:null
+    },
+    bankStatement:{
+        type:String,
+        default:true,
+    },
+    otherDocument:{
+        type:String,
+        require:true,        
+    },
+    cibil_score:{
+        type:Number,
+        default:0
+    }
+},{
+    timeseries:true
+});
+
+const Defaulter_Schema=mongooes.model('defaulter',DefaulterSchema);
+
+module.exports=Defaulter_Schema;
