@@ -1,16 +1,18 @@
 require('dotenv').config();
 
-const DefaulterSchema=require('../../modal/Defaulter');
-const fs=require('fs');
+const DefaulterSchema = require('../../modal/Defaulter');
+const fs = require('fs');
 // const path=require('path');
 
+
+// add defaulter by user id 
 exports.AddDefaulterByUser = async (req, res) => {
-    const { userName, mobileNo, pan_card, addharcard, address, cityName, stateName, firmName, gstNo, pendingAmount, remark } = req.body;
+    const { user_id, userName, mobileNo, pan_card, addharcard, address, cityName, stateName, firmName, gstNo, pendingAmount, remark } = req.body;
     const bankStatement = req.files?.bankStatement?.[0]?.filename;
     const otherDocs = req.files?.otherDocs?.[0]?.filename;
-     const bankpath='/upload/'+bankStatement;
-     const otherDocsPath='/upload/'+otherDocs;
-     
+    const bankpath = '/upload/' + bankStatement;
+    const otherDocsPath = '/upload/' + otherDocs;
+
     // Validate file uploads
     if (!bankStatement) {
         return res.status(400).json({ status: 0, message: "Please Upload bank Statement" });
@@ -18,11 +20,11 @@ exports.AddDefaulterByUser = async (req, res) => {
     if (!otherDocs) {
         return res.status(400).json({ status: 0, message: "Please Upload Other Document" });
     }
-    try {       
-        const defaulterData = new DefaulterSchema({userName, mobileNo, pan_card, addharcard, address, cityName, stateName, firmName, gstNo, pendingAmount, remark,bankStatement:bankpath, otherDocument:otherDocsPath});
+    try {
+        const defaulterData = new DefaulterSchema({ user_id, userName, mobileNo, pan_card: pan_card_no, addharcard, address, cityName, stateName, firmName, gstNo, pendingAmount, remark, bankStatement: bankpath, otherDocument: otherDocsPath });
         const defaulterResponseData = await defaulterData.save();
         // Response after successful save
-        res.status(200).json({message: 'Defaulter added successfully',data: defaulterResponseData}); 
+        res.status(200).json({ message: 'Defaulter added successfully', data: defaulterResponseData });
     } catch (error) {
         console.error('Error adding defaulter:', error);
         res.status(500).json({ message: 'Error adding defaulter', error });
@@ -30,14 +32,73 @@ exports.AddDefaulterByUser = async (req, res) => {
 };
 
 
-// list of defaulter
-exports.listOfDefaulter=async(req,res)=>{
-    const listofDefaulter=await DefaulterSchema.find();
-    if(listofDefaulter){
-        return res.status(200).json({status:1,list:listofDefaulter,staticPath:'http://localhost:8000'})
-    }else{
-        return res.status(404).json({status:0,message:"Data Not Avilable"})
+// Get  all  list of defaulter
+exports.listOfDefaulter = async (req, res) => {
+    const listofDefaulter = await DefaulterSchema.find();
+    if (listofDefaulter) {
+        return res.status(200).json({ status: 1, list: listofDefaulter, staticPath: 'http://localhost:8000' });
+    } else {
+        return res.status(404).json({ status: 0, message: "Data Not Avilable" })
+    }
+}
+
+
+// List of defaulter by user ID
+exports.infoDefaulterByUserId = async (req, res) => {
+    const { user_id } = req.body;
+    const DefaulterData = await DefaulterSchema.findOne({ user_id: user_id });
+    // extrack data from db by user id
+    try {
+        if (DefaulterData) {
+            return res.status(200).json({ status: 1, data: DefaulterData, staticPath: "http://localhost:8000" });
+        } else {
+            return res.status(404).json({ status: 0, Message: "Defaulter Not Found Found" })
+        }
+    } catch (error) {
+        return res.status(500).json({ status: 0, message: "Something went to wrong ! Please try Again" })
+    }
+}
+
+
+// defaulter search by name , pancard , aadhar card , Gst No,  mobile No Function start
+exports.SearchDefaulterData = async (req, res) => {
+
+    const { defaulter_name, pan_card_no, aadhar_card, gst_no, mobile_No } = req.body;
+    console.log(req.body);
+
+    const searchCriteria = {};
+
+    if (defaulter_name) searchCriteria.defaulter_name = defaulter_name;
+    if (pan_card_no) searchCriteria.pan_card_no = pan_card_no;
+    if (aadhar_card) searchCriteria.aadhar_card = aadhar_card;
+    if (gst_no) searchCriteria.gst_no = gst_no;
+    if (mobile_No) searchCriteria.mobile_No = mobile_No;
+
+    // console.log(searchCriteria)
+
+    const defaluterData = await DefaulterSchema.updateOne({ searchCriteria: searchCriteria });
+    console.log(defaluterData);
+    const updateData = {};
+
+    // Dynamically construct the update object
+
+
+    res.send("this is demo");
+}
+// defaulter search by name , pancard , aadhar card , Gst No, Mobile No Function end
+
+
+// defaulter cibil score clean apis
+exports.ClearDefaulterCibilScore = async (req, res) => {
+
+    const { user_id, defaulter_id } = req.body;
+    if (!user_id) return res.status(400).json({ status: 0, Message: "User Id Not found" })
+    if (!defaulter_id) return res.status(400).json({ status: 0, Message: "Defaulter  Id Not found" })
+
+    try {
+
+    } catch (error) {
+        return res.status(500).json({ status: 0, Message: "Something Wrong Please try Again !" })
     }
 
 }
-

@@ -96,21 +96,26 @@ exports.UserInfoById=async (req,res)=>{
         if(error.value._id){
             return res.status(500).json({status: 0,message: "Invalid Student ID"});
         }
-
     }
 }
 
-// exports.LoginStudentByNumber=async(req,res)=>{
-//         const {mobileNo,otp}=req.body;
 
-//     try{
-
-//         console.log(req.body)
-//         res.send("otp send sucessfully")
-
-//     }catch(error){
-//         return res.status(500).json({status:0,Message:"Enter Valid Mobile Number"})
-//     }
-
-// }
-
+// user edit by id 
+exports.EditByUserId= async (req,res)=>{
+    const {user_id,user_name,gst_no,pan_no,firm_name,mobile_no}=req.body;
+    const updateData={};
+    if (user_name) updateData.user_name = user_name;
+    if (gst_no) updateData.gst_no = gst_no;
+    if (pan_no) updateData.pan_no = pan_no;
+    if (firm_name) updateData.firm_name = firm_name;
+    if (mobile_no) updateData.mobile_no = mobile_no;
+    const result = await user_schema.updateOne(
+        { _id: user_id }, // Query to match the document
+        { $set: updateData } // Update operation
+    );
+    if(result){
+       return res.status(200).json({status:1,Message:"Update Sucessfully"})
+    }else{
+        return res.status(500).json({status:0,Message:"Update Failed "})
+    }
+}
