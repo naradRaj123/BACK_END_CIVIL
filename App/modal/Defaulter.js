@@ -26,7 +26,7 @@ const DefaulterSchema=new mongooes.Schema({
         type:String,
         require:true,
     },
-    pand_card_no:{
+    pan_card_no:{
         type:String,
         require:true,
     },
@@ -64,12 +64,16 @@ const DefaulterSchema=new mongooes.Schema({
     },
     cibil_score:{
         type:Number,
-        default:0
-    }
+        default:100,
+    },
+    clear_score:{
+        type:Number,
+        default:true,
+    },
+    
 },{
     timeseries:true
 });
 
 const Defaulter_Schema=mongooes.model('defaulter',DefaulterSchema);
-
 module.exports=Defaulter_Schema;
