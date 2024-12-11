@@ -56,15 +56,11 @@ exports.LoginUser=async(req,res)=>{
     if(password==""){ return res.status(404).json({status:0,msg:"Password required"});}
     try{
         const userData=await user_schema.findOne({email});
-        console.log(userData);
-
         if(userData==null){return res.status(404).json({status:0,msg:"user not found"})}
         const matchPassword= await bcrypt.compare(password, userData.password);
-        
         if(!matchPassword){return  res.status(401).json({status:0,msg:"password not match"})}
-
         const userToken=await jwttoken.sign({id:userData._id},process.env.JWT_TOKEN_KEY)
-        return res.status(200).json({status:1,msg:"login successful", userlist:userData,token_key:userToken})
+        return res.status(200).json({status:1,msg:"login successful",userData,token_key:userToken})
     }catch(error){
         return res.status(500).json({status:0,msg:"Something went Wrong try Sometime"});
     }
