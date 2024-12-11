@@ -1,4 +1,3 @@
-const studentModal=require('../../modal/StudentModal')
 const bcrypt=require('bcrypt');
 const jwttoken=require('jsonwebtoken');
 
@@ -13,15 +12,11 @@ exports.userRegister= async (req ,res)=>{
     if(gst_no=="" || firm_name=="" || user_name=="" || mobile_no=="" || email=="" || password=="" ){
         return res.status(409).json({status:0,msg:'All field are Required'}); 
     }
-
     // user email exits 
     const userExits=await user_schema.findOne({email});
-
     if(userExits){
         return res.status(409).json({status:0,msg:'Email already Exists Please Try another email'});    
     }
-
-
     const salthRound=10;
     const hashPassword=await bcrypt.hash(password,salthRound);
     try{
@@ -36,7 +31,7 @@ exports.userRegister= async (req ,res)=>{
         // if(error.errorResponse.keyPattern.email){
         //     res.status(409).json({status:0,msg:'Email already Exists Please Try another email'}); 
         // }
-        res.status(409).json({status:0,msg:'Registration fail something went wrong'}); 
+       return res.status(409).json({status:0,msg:'Registration fail something went wrong'}); 
         
     }
 }
@@ -56,31 +51,20 @@ exports.ListofUsers = async (req,res)=>{
 }
 
 exports.LoginUser=async(req,res)=>{
-    console.log(req.body)
     const {email,password}=req.body;
+    if(email==""){return res.status(404).json({status:0,msg:"Email required"});}
+    if(password==""){ return res.status(404).json({status:0,msg:"Password required"});}
     try{
-        if(email==""){
-            return res.status(404).json({status:0,msg:"Email required"});
-        }
-        if(password==""){
-            return res.status(404).json({status:0,msg:"Password required"});
-        }
-        
         const userData=await user_schema.findOne({email});
-        if(userData){
-            console.log(userData.password)
-            let user_password=await bcrypt.compareSync(password,userData.password)
-            console.log(user_password)
-            if(user_password){
-                return  res.status(200).json({status:1,msg:"Sucessfully Login",userlist:userData})
-            }else{
-                return  res.status(404).json({status:0,msg:"Password Not match "})
-            }
-            
-        }else{
-            return res.status(404).json({status:0,msg:"User Not Found"})
-        }
-                
+        console.log(userData);
+
+        if(userData==null){return res.status(404).json({status:0,msg:"user not found"})}
+        const matchPassword= await bcrypt.compare(password, userData.password);
+        
+        if(!matchPassword){return  res.status(401).json({status:0,msg:"password not match"})}
+
+        const userToken=await jwttoken.sign({id:userData._id},process.env.JWT_TOKEN_KEY)
+        return res.status(200).json({status:1,msg:"login successful", userlist:userData,token_key:userToken})
     }catch(error){
         return res.status(500).json({status:0,msg:"Something went Wrong try Sometime"});
     }
