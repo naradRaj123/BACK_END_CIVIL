@@ -13,6 +13,15 @@ exports.userRegister= async (req ,res)=>{
     if(gst_no=="" || firm_name=="" || user_name=="" || mobile_no=="" || email=="" || password=="" ){
         return res.status(409).json({status:0,msg:'All field are Required'}); 
     }
+
+    // user email exits 
+    const userExits=await user_schema.findOne({email});
+
+    if(userExits){
+        return res.status(409).json({status:0,msg:'Email already Exists Please Try another email'});    
+    }
+
+
     const salthRound=10;
     const hashPassword=await bcrypt.hash(password,salthRound);
     try{
@@ -28,7 +37,7 @@ exports.userRegister= async (req ,res)=>{
         //     res.status(409).json({status:0,msg:'Email already Exists Please Try another email'}); 
         // }
         res.status(409).json({status:0,msg:'Registration fail something went wrong'}); 
-        // res.send({error});
+        
     }
 }
 
