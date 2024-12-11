@@ -1,4 +1,3 @@
-const studentModal=require('../../modal/StudentModal')
 const bcrypt=require('bcrypt');
 const jwttoken=require('jsonwebtoken');
 
@@ -20,19 +19,20 @@ exports.userRegister= async (req ,res)=>{
         const userResponse = await userData.save()
         .then((insertdata)=>{
             // send mail
-            res.status(200).json({ status: 1, message: `Register successfull`});
+            res.status(200).json({ status: 1, msg: `Register successful`});
         })
         
     }catch(error){
         // if(error.errorResponse.keyPattern.email){
         //     res.status(409).json({status:0,msg:'Email already Exists Please Try another email'}); 
         // }
-        res.status(409).json({status:0,msg:'Registration fail something went wrong'}); 
+      return  res.status(409).json({status:0,msg:'Registration fail something went wrong'}); 
         // res.send({error});
     }
 }
 
 
+// list of users
 exports.ListofUsers = async (req,res)=>{
     try{
         const userdata= await user_schema.find();
@@ -46,15 +46,17 @@ exports.ListofUsers = async (req,res)=>{
     }
 }
 
+
+// user login 
 exports.LoginUser=async(req,res)=>{
     console.log(req.body)
     const {email,password}=req.body;
     try{
         if(email==""){
-            return res.status(404).json({status:0,message:"Email required"});
+            return res.status(404).json({status:0,msg:"Email required"});
         }
         if(password==""){
-            return res.status(404).json({status:0,message:"Password required"});
+            return res.status(404).json({status:0,msg:"Password required"});
         }
         
         const userData=await user_schema.findOne({email});
@@ -63,38 +65,39 @@ exports.LoginUser=async(req,res)=>{
             let user_password=await bcrypt.compareSync(password,userData.password)
             console.log(user_password)
             if(user_password){
-                return  res.status(200).json({status:1,message:"Sucessfully Login",userlist:userData})
+                return  res.status(200).json({status:1,msg:"Sucessfully Login",userlist:userData})
             }else{
-                return  res.status(404).json({status:0,message:"Password Not match "})
+                return  res.status(404).json({status:0,msg:"Password Not match "})
             }
             
         }else{
-            return res.status(404).json({status:0,message:"User Not Found"})
+            return res.status(404).json({status:0,msg:"User Not Found"})
         }
                 
     }catch(error){
-        return res.status(500).json({status:0,message:"Something went Wrong try Sometime"});
+        return res.status(500).json({status:0,msg:"Something went Wrong try Sometime"});
     }
     
 }
 
+// user info by id
 exports.UserInfoById=async (req,res)=>{
         const{userId}=req.body
     try{
 
         if (!userId) {
-            return res.status(400).json({status: 0,message: "Please provide a  Student ID.",});
+            return res.status(400).json({status: 0,msg: "Please provide a  Student ID.",});
         }
         const userData = await user_schema.findById({_id:userId})
         if (!userData) {
-            return res.status(404).json({status: 0,message: "User not found. Please check the ID.",});
+            return res.status(404).json({status: 0,msg: "User not found. Please check the ID.",});
         }
         return res.status(200).json({status: 1,userData,});
 
     }catch(error){
-        // console.error("Error fetching student data:", error.message); 
+        // console.error("Error fetching student data:", error.msg); 
         if(error.value._id){
-            return res.status(500).json({status: 0,message: "Invalid Student ID"});
+            return res.status(500).json({status: 0,msg: "Invalid Student ID"});
         }
     }
 }
