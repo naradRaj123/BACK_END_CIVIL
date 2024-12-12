@@ -62,29 +62,27 @@ exports.LoginUser=async(req,res)=>{
         const userToken=await jwttoken.sign({id:userData._id},process.env.JWT_TOKEN_KEY)
         return res.status(200).json({status:1,msg:"login successful",userData,token_key:userToken})
     }catch(error){
-        return res.status(500).json({status:0,msg:"Something went Wrong try Sometime"});
+        return res.status(500).json({status:false,msg:"Something went Wrong try Sometime"});
     }
     
 }
 
-exports.UserInfoById=async (req,res)=>{
-        const{userId}=req.body
-    try{
 
-        if (!userId) {
-            return res.status(400).json({status: 0,msg: "Please provide a  Student ID.",});
-        }
+// user data by user id
+exports.UserInfoById=async (req,res)=>{
+        const userId=req.params.id;      
+        try{
         const userData = await user_schema.findById({_id:userId})
         if (!userData) {
-            return res.status(404).json({status: 0,msg: "User not found. Please check the ID.",});
+            return res.status(404).json({status: false,msg: "user not found. please check the id.",});
         }
         return res.status(200).json({status: 1,userData,});
-
     }catch(error){
-        // console.error("Error fetching student data:", error.msg); 
-        if(error.value._id){
-            return res.status(500).json({status: 0,msg: "Invalid Student ID"});
+        if (error?.kind === 'ObjectId') {
+            return res.status(400).json({status: false,msg: "Invalid user ID format. Please check the ID.",});
         }
+        // Handle generic server error
+        return res.status(500).json({status: false,msg: "An unexpected error occurred. Please try again later.",});
     }
 }
 
@@ -105,6 +103,6 @@ exports.EditByUserId= async (req,res)=>{
     if(result){
        return res.status(200).json({status:1,msg:"Update Sucessfully"})
     }else{
-        return res.status(500).json({status:0,msg:"Update Failed "})
+        return res.status(500).json({status:false,msg:"Update Failed "})
     }
 }
