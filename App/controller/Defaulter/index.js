@@ -21,7 +21,7 @@ exports.AddDefaulterByUser = async (req, res) => {
         return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
     }
     try {
-        const defaulterData = new DefaulterSchema({ user_id, userName, mobileNo, pan_card: pan_card_no, addharcard, address, cityName, stateName, firmName, gstNo, pendingAmount, remark, bankStatement: bankpath, otherDocument: otherDocsPath });
+        const defaulterData = new DefaulterSchema({ user_id, userName, mobileNo, addharcard, address, cityName, stateName, firmName, gstNo, pendingAmount, remark, bankStatement: bankpath, otherDocument: otherDocsPath });
         const defaulterResponseData = await defaulterData.save();
         // Response after successful save
         res.status(200).json({ msg: 'Defaulter added successfully', data: defaulterResponseData });
