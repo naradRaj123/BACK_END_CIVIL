@@ -7,22 +7,22 @@ const fs = require('fs');
 
 // add defaulter by user id 
 exports.AddDefaulterByUser = async (req, res) => {
-    const { user_id, userName, mobileNo, pan_card, addharcard, address, cityName, stateName, firmName, gstNo, pendingAmount, remark } = req.body;
+    const { user_id, defaulter_name, mobile_No, aadhar_card,  address, city, state, firm_name, gst_no, pan_card_no , pending_amount, remark } = req.body;
     const bankStatement = req.files?.bankStatement?.[0]?.filename;
     const otherDocs = req.files?.otherDocs?.[0]?.filename;
     const bankpath = '/upload/' + bankStatement;
     const otherDocsPath = '/upload/' + otherDocs;
 
     // Validate file uploads
-    if (!bankStatement) {
-        return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
-    }
-    if (!otherDocs) {
-        return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
-    }
+    // if (!bankStatement) {
+    //     return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
+    // }
+    // if (!otherDocs) {
+    //     return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
+    // }
     try {
-        const defaulterData = new DefaulterSchema({ user_id, userName:defaulter_name, mobileNo:mobile_No, addharcard:aadhar_card, address
-            , cityName:city, stateName:state, firmName:firm_name, gstNo:gst_no, pan_card:pan_card_no , pendingAmount:pending_amount, remark, bankStatement: bankpath, otherDocument: otherDocsPath });
+        const defaulterData = new DefaulterSchema({ user_id, defaulter_name, mobile_No, aadhar_card, address
+            , city, state, firm_name, gst_no, pan_card_no , pending_amount, remark, bankStatement: bankpath, otherDocument: otherDocsPath });
         const defaulterResponseData = await defaulterData.save();
         // Response after successful save
         res.status(200).json({ msg: 'Defaulter added successfully', data: defaulterResponseData });
