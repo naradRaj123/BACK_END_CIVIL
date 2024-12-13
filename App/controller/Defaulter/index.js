@@ -15,19 +15,19 @@ exports.AddDefaulterByUser = async (req, res) => {
 
     // Validate file uploads
     if (!bankStatement) {
-        return res.status(400).json({ status: 0, message: "Please Upload bank Statement" });
+        return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
     }
     if (!otherDocs) {
-        return res.status(400).json({ status: 0, message: "Please Upload Other Document" });
+        return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
     }
     try {
         const defaulterData = new DefaulterSchema({ user_id, userName, mobileNo, pan_card: pan_card_no, addharcard, address, cityName, stateName, firmName, gstNo, pendingAmount, remark, bankStatement: bankpath, otherDocument: otherDocsPath });
         const defaulterResponseData = await defaulterData.save();
         // Response after successful save
-        res.status(200).json({ message: 'Defaulter added successfully', data: defaulterResponseData });
+        res.status(200).json({ msg: 'Defaulter added successfully', data: defaulterResponseData });
     } catch (error) {
         console.error('Error adding defaulter:', error);
-        res.status(500).json({ message: 'Error adding defaulter', error });
+        res.status(500).json({ msg: 'Error adding defaulter', error });
     }
 };
 
