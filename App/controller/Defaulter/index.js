@@ -14,12 +14,12 @@ exports.AddDefaulterByUser = async (req, res) => {
     const otherDocsPath = '/upload/' + otherDocs;
 
     // Validate file uploads
-    if (!bankStatement) {
-        return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
-    }
-    if (!otherDocs) {
-        return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
-    }
+    // if (!bankStatement) {
+    //     return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
+    // }
+    // if (!otherDocs) {
+    //     return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
+    // }
     try {
         const defaulterData = new DefaulterSchema({ user_id, userName, mobileNo, addharcard, address, cityName, stateName, firmName, gstNo, pendingAmount, remark, bankStatement: bankpath, otherDocument: otherDocsPath });
         const defaulterResponseData = await defaulterData.save();
