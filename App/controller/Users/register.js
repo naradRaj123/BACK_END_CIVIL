@@ -1,6 +1,6 @@
 const bcrypt=require('bcrypt');
 const jwttoken=require('jsonwebtoken');
-
+const nodeMailer=require('nodemailer');
 const user_schema = require('../../modal/UserModal');
 
 exports.homepage= async(req,res)=>{
@@ -28,9 +28,9 @@ exports.userRegister= async (req ,res)=>{
         })
         
     }catch(error){
-        // if(error.errorResponse.keyPattern.email){
-        //     res.status(409).json({status:0,msg:'Email already Exists Please Try another email'}); 
-        // }
+        if(error.errorResponse.keyPattern.email){
+            res.status(409).json({status:0,msg:'Email already Exists Please Try another email'}); 
+        }
        return res.status(409).json({status:0,msg:'Registration fail something went wrong'}); 
         
     }
@@ -105,4 +105,10 @@ exports.EditByUserId= async (req,res)=>{
     }else{
         return res.status(500).json({status:false,msg:"Update Failed "})
     }
+}
+
+
+// user forgot password
+exports.ForgotPassword= async (req,res)=>{
+    res.send("forgot password controller")
 }

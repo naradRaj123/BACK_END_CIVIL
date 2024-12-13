@@ -19,7 +19,7 @@ const DefaulterSchema=new mongooes.Schema({
     mobile_No:{
         type:Number,
         require:true,
-        unqiue:true,
+        unique: true,
         default:null
     },
     gst_no:{

@@ -12,7 +12,8 @@ const studentRegisterSchema= new mongooes.Schema({
     },
     mobileNo:{
         type:Number,
-        default:null
+        default:null,
+        unique:true,
     },
     gender:{
         type:String,

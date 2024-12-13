@@ -10,5 +10,5 @@ router.get('/user-list',UserController.ListofUsers);
 router.post('/login-user', verifyUser.verifyUser,UserController.LoginUser);
 router.post('/editUser',UserController.EditByUserId);
 router.post('/userdataById/:id',UserController.UserInfoById);
-
+// router.post('/forgot-password',UserController)
 module.exports=router
