@@ -276,9 +276,7 @@ exports.ResendOtp = async (req, res) => {
 // CHANGE PASSWORD AFTER 
 exports.ChangePassword = async (req, res) => {
     const { email, new_password } = req.body;
-
     if (!email) { return res.send({ status: 0, msg: "please enter email" }) }
-
     // check valid email from database
     const userData = await user_schema.findOne({ email });
     if (!userData) { return res.send({ status: 404, msg: "email not found" }) }
