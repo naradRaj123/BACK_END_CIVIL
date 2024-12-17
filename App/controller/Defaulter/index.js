@@ -26,7 +26,7 @@ exports.AddDefaulterByUser = async (req, res) => {
             , city, state, firm_name, gst_no, pan_card_no , pending_amount, remark, bankStatement: bankpath, otherDocument: otherDocsPath });
             const defaulterResponseData = await defaulterData.save();
             // Response after successful save
-            res.status(200).json({ msg: 'Defaulter added successfully', data: defaulterResponseData });
+          return  res.status(200).json({ msg: 'Defaulter added successfully', data: defaulterResponseData });
         } catch (error) {
             console.error('Error adding defaulter:', error);
             if(error.errors.aadhar_card.valueType=="string"){
@@ -95,15 +95,14 @@ exports.AddDefaulterByUser = async (req, res) => {
     
     // defaulter cibil score clean apis
     exports.ClearDefaulterCibilScore = async (req, res) => {
-        
         const { user_id, defaulter_id } = req.body;
         if (!user_id) return res.status(400).json({ status: 0, Message: "User Id Not found" })
             if (!defaulter_id) return res.status(400).json({ status: 0, Message: "Defaulter  Id Not found" })
-                
-        try {
+        res.send("clear score of cibil ")         
+        // try {
             
-        } catch (error) {
-            return res.status(500).json({ status: 0, Message: "Something Wrong Please try Again !" })
-        }
+        // } catch (error) {
+        //     return res.status(500).json({ status: 0, Message: "Something Wrong Please try Again !" })
+        // }
         
     }

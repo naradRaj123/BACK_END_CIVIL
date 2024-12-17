@@ -35,6 +35,14 @@ const UserRegisterSchema=new mongoose.Schema({
         require:true,
         default:null,
     },
+    otp_expiry:{
+        type:String,
+        default:null,
+    },
+    otp:{
+        type:Number,
+        default:null,
+    },
 },{
     timeseries:true,
 });
