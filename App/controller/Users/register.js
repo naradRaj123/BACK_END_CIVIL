@@ -120,10 +120,10 @@ exports.ForgotPassword = async (req, res) => {
         if (!emailData) {
             return res.status(409).json({ status: 0, msg: "email not found" })
         }
-        const currentDateTime=new Date();
+        const currentDateTime = new Date();
         const futureTime = new Date(currentDateTime.getTime() + 1 * 60 * 1000)
-        
-        const expirytime=futureTime.toLocaleString();
+
+        const expirytime = futureTime.toLocaleString();
         // send mail when user email found 
         const otp = Math.floor(1111 + Math.random() * (9999 - 1111 + 1));
 
@@ -166,7 +166,7 @@ exports.ForgotPassword = async (req, res) => {
                 return res.status(200).json({ status: true, msg: `successful send otp on your email : ${email} ` });
             }
         }
-        
+
     } catch (error) {
         return res.status().json({ status: false, msg: "Something went to wrong" });
     }
@@ -175,40 +175,40 @@ exports.ForgotPassword = async (req, res) => {
 
 
 // VERIFY OTP FUNCTION 
-exports.verifyOtp=async(req,res)=>{
-    let {email,otp}=req.body;
-    if(!otp){
-        return res.status(404).json({status:0,msg:"Please Enter Otp"})
+exports.verifyOtp = async (req, res) => {
+    let { email, otp } = req.body;
+    if (!otp) {
+        return res.status(404).json({ status: 0, msg: "Please Enter Otp" })
     }
-    if(!email){
-        return res.status(404).json({status:0,msg:"Please Enter Email"})
+    if (!email) {
+        return res.status(404).json({ status: 0, msg: "Please Enter Email" })
     }
-    const userdata=await user_schema.findOne({email})
-    const currentDateTime=new Date();
-    const expiryTime=new Date(userdata.otp_expiry);
-   
-    if(userdata){
+    const userdata = await user_schema.findOne({ email })
+    const currentDateTime = new Date();
+    const expiryTime = new Date(userdata.otp_expiry);
+
+    if (userdata) {
         // console.log(userdata.otp)
-        if(otp===userdata.otp){
-            if(currentDateTime <= expiryTime){
+        if (otp === userdata.otp) {
+            if (currentDateTime <= expiryTime) {
                 // const token=jwttoken.sign({id:userdata._id},process.env.JWT_TOKEN_KEY)
                 // return res.status(200).json({status:1,msg:"OTP Verify Successful"})
-                return res.send({status:200,msg:"OTP Verify Successful"});
-            }else{
+                return res.send({ status: 200, msg: "OTP Verify Successful" });
+            } else {
                 // return res.status(408).json({status:0,msg:"Otp Expire"})
-                return res.send({status:408,msg:"Otp Expire"})
+                return res.send({ status: 408, msg: "Otp Expire" })
             }
-        }else{
+        } else {
             // return res.status(400).json({status:0,msg:"Invalid OTP"})
-           return res.send({status:false,msg:"Invalid OTP"})
+            return res.send({ status: false, msg: "Invalid OTP" })
         }
     }
 }
 
 
 // RESEND OTP FUNCTION
-exports.ResendOtp= async (req,res)=>{
-    
+exports.ResendOtp = async (req, res) => {
+
     const { email } = req.body;
     if (!email) {
         return res.status(404).json({ status: false, msg: "Enter Your email" });
@@ -218,10 +218,10 @@ exports.ResendOtp= async (req,res)=>{
         if (!emailData) {
             return res.status(409).json({ status: 0, msg: "email not found" })
         }
-        const currentDateTime=new Date();
+        const currentDateTime = new Date();
         const futureTime = new Date(currentDateTime.getTime() + 1 * 60 * 1000)
-        
-        const expirytime=futureTime.toLocaleString();
+
+        const expirytime = futureTime.toLocaleString();
         // send mail when user email found 
         const otp = Math.floor(1111 + Math.random() * (9999 - 1111 + 1));
 
@@ -264,7 +264,7 @@ exports.ResendOtp= async (req,res)=>{
                 return res.status(200).json({ status: true, msg: `successful send otp on your email : ${email} ` });
             }
         }
-        
+
     } catch (error) {
         return res.status().json({ status: false, msg: "Something went to wrong" });
     }
@@ -274,20 +274,32 @@ exports.ResendOtp= async (req,res)=>{
 
 
 // CHANGE PASSWORD AFTER 
-exports.ChangePassword=async(req,res)=>{
-    const {email,new_password}=req.body;
+exports.ChangePassword = async (req, res) => {
+    const { email, new_password } = req.body;
 
-    if(!email){ return res.send({status:0,msg:"please enter email"})}
+    if (!email) { return res.send({ status: 0, msg: "please enter email" }) }
 
-    try{
+    // check valid email from database
+    const userData = await user_schema.findOne({ email });
+    if (!userData) { return res.send({ status: 404, msg: "email not found" }) }
+    try {
+        const salthRound = 10;
+        const hashNewPassword = await bcrypt.hash(new_password, salthRound);
+        // console.log(hashNewPassword);
+        // user update 
+        const userUpdateData = await user_schema.updateOne({ _id: userData._id.toString() }, { $set: { password: hashNewPassword } })
 
+        if(userUpdateData){
+            return res.send({status:200,msg:"password changed successfully."})
+        }
 
+        // res.send("email found");
 
-    }catch(error){
-        return re.send({status:false,msg:"Something went wrong! Please try again."})
+    } catch (error) {
+        return res.send({ status: false, msg: "Something went wrong! Please try again." })
     }
 
-    
+
 
 
 }
