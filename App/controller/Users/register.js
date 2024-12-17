@@ -192,9 +192,11 @@ exports.verifyOtp=async(req,res)=>{
         if(otp===userdata.otp){
             if(currentDateTime <= expiryTime){
                 // const token=jwttoken.sign({id:userdata._id},process.env.JWT_TOKEN_KEY)
-                return res.status(200).json({status:1,msg:"OTP Verify Successful"})
+                // return res.status(200).json({status:1,msg:"OTP Verify Successful"})
+                return res.send({status:200,msg:"OTP Verify Successful"});
             }else{
-                return res.status(408).json({status:0,msg:"Otp Expire"})
+                // return res.status(408).json({status:0,msg:"Otp Expire"})
+                return res.send({status:408,msg:"Otp Expire"})
             }
         }else{
             // return res.status(400).json({status:0,msg:"Invalid OTP"})
@@ -273,8 +275,19 @@ exports.ResendOtp= async (req,res)=>{
 
 // CHANGE PASSWORD AFTER 
 exports.ChangePassword=async(req,res)=>{
+    const {email,new_password}=req.body;
 
-    res.send("change password controller");
+    if(!email){ return res.send({status:0,msg:"please enter email"})}
+
+    try{
+
+
+
+    }catch(error){
+        return re.send({status:false,msg:"Something went wrong! Please try again."})
+    }
+
+    
 
 
 }
