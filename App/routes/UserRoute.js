@@ -13,4 +13,5 @@ router.post('/userdataById/:id',UserController.UserInfoById);
 router.post('/forgot-password',UserController.ForgotPassword);
 router.post('/verifyOtp',UserController.verifyOtp);
 router.post('/resendOtp',UserController.ResendOtp);
+router.post('/changePassword',UserController.ChangePassword);
 module.exports=router
