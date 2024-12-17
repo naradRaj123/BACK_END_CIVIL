@@ -186,8 +186,7 @@ exports.verifyOtp=async(req,res)=>{
     const userdata=await user_schema.findOne({email})
     const currentDateTime=new Date();
     const expiryTime=new Date(userdata.otp_expiry);
-    // console.log(currentDateTime);
-    // console.log(expiryTime);
+   
     if(userdata){
         // console.log(userdata.otp)
         if(otp===userdata.otp){
@@ -198,7 +197,7 @@ exports.verifyOtp=async(req,res)=>{
                 return res.status(408).json({status:0,msg:"Otp Expire"})
             }
         }else{
-            return res.status(409).json({status:0,msg:"Please Enter Valid Otp"})
+            return res.status(400).json({status:0,msg:"Invalid OTP"})
         }
     }
 }
