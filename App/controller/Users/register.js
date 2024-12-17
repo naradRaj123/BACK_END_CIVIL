@@ -197,7 +197,8 @@ exports.verifyOtp=async(req,res)=>{
                 return res.status(408).json({status:0,msg:"Otp Expire"})
             }
         }else{
-            return res.status(400).json({status:0,msg:"Invalid OTP"})
+            // return res.status(400).json({status:0,msg:"Invalid OTP"})
+           return res.send({status:false,msg:"Invalid OTP"})
         }
     }
 }
