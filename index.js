@@ -10,6 +10,7 @@ app.use(express.json());
 
 app.use(allroutes);
 app.use("/upload",express.static('upload'));
+app.use("/user-img",express.static('user-img'));
 
 // Start the server
 const PORT = process.env.PORT || 8000;

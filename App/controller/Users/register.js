@@ -2,11 +2,14 @@ const bcrypt = require('bcrypt');
 const jwttoken = require('jsonwebtoken');
 const nodeMailer = require('nodemailer');
 const user_schema = require('../../modal/UserModal');
+const fs=require('fs')
 
+// HOME PAGE API
 exports.homepage = async (req, res) => {
     res.send("Welcome to Home routes");
 }
 
+// USER REGISTER API
 exports.userRegister = async (req, res) => {
     const { gst_no, pan_no, firm_name, user_name, mobile_no, email, password } = req.body;
     if (gst_no == "" || firm_name == "" || user_name == "" || mobile_no == "" || email == "" || password == "") {
@@ -37,6 +40,7 @@ exports.userRegister = async (req, res) => {
 }
 
 
+// LIST OF USER
 exports.ListofUsers = async (req, res) => {
     try {
         const userdata = await user_schema.find();
@@ -50,6 +54,7 @@ exports.ListofUsers = async (req, res) => {
     }
 }
 
+// USER LOGIN API
 exports.LoginUser = async (req, res) => {
     const { email, password } = req.body;
     if (email == "") { return res.status(404).json({ status: 0, msg: "Email required" }); }
@@ -186,13 +191,10 @@ exports.verifyOtp = async (req, res) => {
     const userdata = await user_schema.findOne({ email })
     const currentDateTime = new Date();
     const expiryTime = new Date(userdata.otp_expiry);
-
     if (userdata) {
         // console.log(userdata.otp)
         if (otp === userdata.otp) {
             if (currentDateTime <= expiryTime) {
-                // const token=jwttoken.sign({id:userdata._id},process.env.JWT_TOKEN_KEY)
-                // return res.status(200).json({status:1,msg:"OTP Verify Successful"})
                 return res.send({ status: 200, msg: "OTP Verify Successful" });
             } else {
                 // return res.status(408).json({status:0,msg:"Otp Expire"})
@@ -286,18 +288,51 @@ exports.ChangePassword = async (req, res) => {
         // console.log(hashNewPassword);
         // user update 
         const userUpdateData = await user_schema.updateOne({ _id: userData._id.toString() }, { $set: { password: hashNewPassword } })
-
         if(userUpdateData){
             return res.send({status:200,msg:"password changed successfully."})
         }
 
-        // res.send("email found");
-
     } catch (error) {
         return res.send({ status: false, msg: "Something went wrong! Please try again." })
     }
-
-
-
-
 }
+
+
+
+// user update image by user id
+exports.UserImageUdateById = async (req, res) => {
+    // const user_id = req.params.id;
+    // const userImgName = req.file?.filename; // Correct for single upload
+    // const imagePath='user-img/'+userImgName;
+    // if (!user_id) {
+    //     fs.unlink(imagePath, (err) => {
+    //         if (err) {
+    //             console.error("Failed to delete image:", err);
+    //         } else {
+    //             console.log("Image deleted due to error in database update");
+    //         }
+    //     });
+    //     return res.status(400).send({ status: false, msg: "Please enter a valid user ID" });
+    // }
+    // if (!userImgName) {
+    //     return res.status(400).send({ status: false, msg: "No image file uploaded" });
+    // }
+
+    // try {
+    //     const userData = await user_schema.findOne({ _id: user_id });
+    //     if (!userData) return res.status(404).send({ status: false, msg: "User not found" });
+    //     // Add logic to update user's image path in the database if required
+    //     console.log(userData);
+    //     res.send({ status: 200, msg: "Image uploaded successfully"});
+    // } catch (error) {
+    //          // Get the full path of the uploaded file
+    //         fs.unlink(imagePath, (err) => {
+    //             if (err) {
+    //                 console.error("Failed to delete image:", err);
+    //             } else {
+    //                 console.log("Image deleted due to error in database update");
+    //             }
+    //         });
+    //     return res.status(500).send({ status: false, msg: "Something went wrong. Please try again later." });
+    // }
+};

@@ -35,6 +35,11 @@ const UserRegisterSchema=new mongoose.Schema({
         require:true,
         default:null,
     },
+    user_img:{
+        type:String,
+        require:true,
+        default:null
+    },
     otp_expiry:{
         type:String,
         default:null,

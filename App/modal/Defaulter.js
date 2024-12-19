@@ -11,6 +11,11 @@ const DefaulterSchema=new mongooes.Schema({
         require:true,
         default:null,
     },
+    added_by:{
+        type:String,
+        require:true,
+        default:null,
+    },
     firm_name:{
         type:String,
         require:true,
@@ -70,6 +75,10 @@ const DefaulterSchema=new mongooes.Schema({
         type:Number,
         default:true,
     },
+    added_on:{
+        type:String,
+        default:null,
+    }
     
 },{
     timeseries:true
