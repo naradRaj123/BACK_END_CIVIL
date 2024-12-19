@@ -22,15 +22,13 @@ exports.AddDefaulterByUser = async (req, res) => {
     // Validate file uploads
     if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
     if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
-    
+
     try {
-        const defaulterData = new DefaulterSchema({
-            user_id, defaulter_name, mobile_No, aadhar_card, address
-            , city, state, firm_name, gst_no, pan_card_no, pending_amount: pending_amount, remark, bankStatement: bankpath, otherDocument: otherDocsPath , added_by :userallData.user_name , added_on : currentTime
+        const defaulterData = new DefaulterSchema({user_id, defaulter_name, mobile_No, aadhar_card, address, city, state, firm_name, gst_no, pan_card_no, pending_amount: pending_amount, remark, bankStatement: bankpath, otherDocument: otherDocsPath , added_by :userallData.user_name , added_on : currentTime
         });
         const defaulterResponseData = await defaulterData.save();
         // Response after successful save
-        return res.status(200).json({ msg: 'Defaulter added successfully', data: defaulterResponseData });
+        return res.status(200).json({status:1, msg: 'Defaulter added successfully', data: defaulterResponseData });
     } catch (error) {
         console.error('Error adding defaulter:', error);
         if (error.errors.aadhar_card.valueType == "string") {
