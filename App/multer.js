@@ -1,7 +1,5 @@
 const multer = require('multer');
-// const path=require('path');
-// upload.single('logo');
-// Set up storage engine for multer
+
 // Define storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
