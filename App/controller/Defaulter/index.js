@@ -57,7 +57,7 @@ exports.infoDefaulterByUserId = async (req, res) => {
     // extrack data from db by user id
     try {
         if (DefaulterData) {
-            return res.status(200).json({ status: 1, data: DefaulterData, staticPath: "http://localhost:8000" });
+            return res.status(200).json({ status: 1, data: DefaulterData, staticPath: "https://back-end-civil.onrender.com" });
         } else {
             return res.status(404).json({ status: 0, Message: "Defaulter Not Found Found" })
         }
