@@ -117,57 +117,84 @@ const user_schema = require('../../modal/UserModal');
 exports.AddDefaulterByUser = async (req,res)=>{
 
     // const {gst_no,pan_card_no,user_id}=req.body;
-    const { user_id, defaulter_name, mobile_No, aadhar_card, address, city, state, firm_name, gst_no, pan_card_no, pending_amount, remark } = req.body;
-    const bankStatement = req.files?.bankStatement?.[0]?.filename;
-    const otherDocs = req.files?.otherDocs?.[0]?.filename;
-    const bankpath = '/upload/' + bankStatement;
-    const otherDocsPath = '/upload/' + otherDocs;
-
-    // Validate file uploads
-    if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
-    if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
+    // const { user_id, defaulter_name, mobile_No, aadhar_card, address, city, state, firm_name, gst_no, pan_card_no, pending_amount, remark } = req.body;
+    try {
+        const {
+          user_id,
+          defaulter_name,
+          mobile_No,
+          aadhar_card,
+          address,
+          city,
+          state,
+          firm_name,
+          gst_no,
+          pan_card_no,
+          pending_amount,
+          remark
+        } = req.body;
     
-    // check defaulter 
-    const defaulterData = await DefaulterSchema.find({ gst_no, pan_card_no })
-
-    console.log(defaulterData[0]._id.toString())
+        const bankStatement = req.files?.bankStatement?.[0]?.filename;
+        const otherDocs = req.files?.otherDocs?.[0]?.filename;
     
-    // when defaulter exits get user id
-    if(defaulterData){
-            const userIdArr=defaulterData[0].user_id
-            await DefaulterSchema.findByIdAndUpdate({ _id: defaulterData[0]._id.toString() }, { $push: { [`user_id`]: user_id } })
-            await DefaulterSchema.findByIdAndUpdate({ _id: defaulterData[0]._id.toString() },{ $inc: { cibil_score: -25 } }, { new: true });
-            return res.status(200).json({ status: 1, msg: 'Defaulter added successfully', data: defaulterResponseData });
-         
-    }else{
-        // add new defaulter
-        const defaulterData = new DefaulterSchema({
-                    user_id: [user_id],
-                    defaulter_name,
-                    mobile_No,
-                    aadhar_card,
-                    address,
-                    city,
-                    state,
-                    firm_name,
-                    gst_no,
-                    pan_card_no,
-                    pending_amount: pending_amount,
-                    remark,
-                    bankStatement: bankpath,
-                    otherDocument: otherDocsPath,
-                    added_by: userallData.user_name,
-                    added_on: currentTime,
-                    added_on1: new Date()
-                });
-                const defaulterResponseData = await defaulterData.save();
-                // Response after successful save
-                if(defaulterResponseData){
-                    return res.status(200).json({ status: 1, msg: 'Defaulter added successfully', data: defaulterResponseData });
-                }
-                return res.status(500).json({ status:500, msg: 'Defaulter not added successfully'});
-    }
+        // Validate file uploads
+        if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please upload bank statement" });
+        if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please upload other document" });
     
+        const bankpath = '/upload/' + bankStatement;
+        const otherDocsPath = '/upload/' + otherDocs;
+    
+        // Check if the defaulter exists
+        const defaulterData = await DefaulterSchema.findOne({ gst_no, pan_card_no });
+    
+        if (defaulterData) {
+          // Defaulter exists; check user_id and update
+          const userIdArr = defaulterData.user_id || [];
+    
+          if (!userIdArr.includes(user_id)) {
+            // Push user_id and update cibil_score if user_id is not present
+            await DefaulterSchema.findByIdAndUpdate(
+              defaulterData._id,
+              { 
+                $push: { user_id: user_id },
+                $inc: { cibil_score: -25 } 
+              },
+              { new: true }
+            );
+          }
+    
+          return res.status(200).json({ status: 1, msg: "Defaulter updated successfully" });
+        } else {
+          // Add new defaulter if it doesn't exist
+          const currentTime = new Date(); // Current time for added_on field
+          const defaulterData = new DefaulterSchema({
+            user_id: [user_id],
+            defaulter_name,
+            mobile_No,
+            aadhar_card,
+            address,
+            city,
+            state,
+            firm_name,
+            gst_no,
+            pan_card_no,
+            pending_amount,
+            remark,
+            bankStatement: bankpath,
+            otherDocument: otherDocsPath,
+            added_by: req.user?.user_name || "System", // Assuming you have `req.user`
+            added_on: currentTime,
+            added_on1: currentTime
+          });
+    
+          const defaulterResponseData = await defaulterData.save();
+    
+          return res.status(200).json({ status: 1, msg: "Defaulter added successfully", data: defaulterResponseData });
+        }
+      } catch (error) {
+        console.error("Error adding defaulter:", error);
+        return res.status(500).json({ status: 0, msg: "Internal Server Error", error: error.message });
+      }
    
 
 }
