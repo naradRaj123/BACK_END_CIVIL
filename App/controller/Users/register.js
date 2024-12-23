@@ -301,38 +301,40 @@ exports.ChangePassword = async (req, res) => {
 
 // user update image by user id
 exports.UserImageUdateById = async (req, res) => {
-    // const user_id = req.params.id;
-    // const userImgName = req.file?.filename; // Correct for single upload
-    // const imagePath='user-img/'+userImgName;
-    // if (!user_id) {
-    //     fs.unlink(imagePath, (err) => {
-    //         if (err) {
-    //             console.error("Failed to delete image:", err);
-    //         } else {
-    //             console.log("Image deleted due to error in database update");
-    //         }
-    //     });
-    //     return res.status(400).send({ status: false, msg: "Please enter a valid user ID" });
-    // }
-    // if (!userImgName) {
-    //     return res.status(400).send({ status: false, msg: "No image file uploaded" });
-    // }
+    const user_id = req.params.id;
+    const userImgName = req.file?.filename; // Correct for single upload
+    console.log(userImgName)
+    const imagePath='user-img/'+userImgName;
+    if (!user_id) {
+        fs.unlink(imagePath, (err) => {
+            if (err) {
+                console.error("Failed to delete image:", err);
+            } else {
+                console.log("Image deleted due to error in database update");
+            }
+        });
+        return res.status(400).send({ status: false, msg: "Please enter a valid user ID" });
+    }
+    if (!userImgName) return res.status(400).send({ status: false, msg: "No image file uploaded" });
+    
+    try {
+        const userData = await user_schema.findOne({ _id: user_id });
+        if (!userData) return res.status(404).send({ status: false, msg: "User not found" });
+        // upload images in database
+        const uploadData=await user_schema.findByIdAndUpdate({_id:user_id},{$set:{user_img:imagePath}},{ new: true });
+        console.log(uploadData);
+        if(!uploadData) return res.status(200).json({status:403,msg:"image  uploaded fail!"})
+        if(uploadData) return res.status(200).json({status:200,msg:"image sucessfully uploaded!"})
 
-    // try {
-    //     const userData = await user_schema.findOne({ _id: user_id });
-    //     if (!userData) return res.status(404).send({ status: false, msg: "User not found" });
-    //     // Add logic to update user's image path in the database if required
-    //     console.log(userData);
-    //     res.send({ status: 200, msg: "Image uploaded successfully"});
-    // } catch (error) {
-    //          // Get the full path of the uploaded file
-    //         fs.unlink(imagePath, (err) => {
-    //             if (err) {
-    //                 console.error("Failed to delete image:", err);
-    //             } else {
-    //                 console.log("Image deleted due to error in database update");
-    //             }
-    //         });
-    //     return res.status(500).send({ status: false, msg: "Something went wrong. Please try again later." });
-    // }
+    } catch (error) {
+             // Get the full path of the uploaded file
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    console.error("Failed to delete image:", err);
+                } else {
+                    console.log("Image deleted due to error in database update");
+                }
+            });
+        return res.status(500).send({ status: false, msg: "Something went wrong. Please try again later." });
+    }
 };

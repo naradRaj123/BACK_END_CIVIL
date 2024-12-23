@@ -19,6 +19,11 @@ exports.AddDefaulterByUser = async (req, res) => {
     const userallData = await user_schema.findOne({ _id: user_id });
     const currentTime=new Date();
 
+
+    // check defaulter defaulter avilable
+    // const defaulterData=await  DefaulterSchema.find({gst_no:})
+    
+
     // Validate file uploads
     if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
     if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
