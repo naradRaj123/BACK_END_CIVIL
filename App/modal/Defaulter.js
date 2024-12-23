@@ -2,9 +2,9 @@ const mongooes=require('mongoose');
 
 const DefaulterSchema=new mongooes.Schema({
     user_id:{
-        type:String,
+        type:[String],
         require:true,
-        default:null
+        default:[]
     },
     defaulter_name:{
         type:String,

@@ -7,41 +7,170 @@ const user_schema = require('../../modal/UserModal');
 
 
 // add defaulter by user id 
-exports.AddDefaulterByUser = async (req, res) => {
+// exports.AddDefaulterByUser = async (req, res) => {
+//     const { user_id, defaulter_name, mobile_No, aadhar_card, address, city, state, firm_name, gst_no, pan_card_no, pending_amount, remark } = req.body;
+//     const bankStatement = req.files?.bankStatement?.[0]?.filename;
+//     const otherDocs = req.files?.otherDocs?.[0]?.filename;
+//     const bankpath = '/upload/' + bankStatement;
+//     const otherDocsPath = '/upload/' + otherDocs;
+//     // console.log(bankStatement);
+
+//     // user data information by user id
+//     const userallData = await user_schema.findOne({ _id: user_id });
+//     const currentTime=new Date();
+
+//     // get user id from defaulter database
+//     const userData = await user_schema.findById({ _id: user_id });
+//     if (!userData) return res.send({ status: 404, msg: "enter valid user id!" });
+
+//     const userID = userData._id.toString();
+//     // console.log(userID);
+//     const userId = await DefaulterSchema.find({ user_id: { $in: [userID] } });
+//     const defaulterData = await DefaulterSchema.find({ gst_no, pan_card_no })
+    
+
+
+//     if (!userId || userId.length === 0) {
+//         // Handle the case when userId is blank or empty
+        
+
+
+
+//       } else {
+//         // Handle the case when userId is not blank
+//         console.log("userId is not blank");
+//       }
+
+//     console.log(userId)
+//     // console.log(userId[0].user_id);
+//     // const userIDArr=userId[0].user_id;
+//     // console.log(userIDArr.length);
+//     res.send("this is add defaluter controller")
+//     // push user id in database dafaulter table
+//     // const userIdArr = userId[0].user_id;
+    
+
+//     // check defaulter defaulter avilable
+//     // const defaulterData = await DefaulterSchema.find({ gst_no, pan_card_no })
+//     // console.log(defaulterData);
+//     // add defaulter not exits
+//     // if (!defaulterData) {
+//     //     const defaulterData = new DefaulterSchema({
+//     //         user_id: [user_id],
+//     //         defaulter_name,
+//     //         mobile_No,
+//     //         aadhar_card,
+//     //         address,
+//     //         city,
+//     //         state,
+//     //         firm_name,
+//     //         gst_no,
+//     //         pan_card_no,
+//     //         pending_amount: pending_amount,
+//     //         remark,
+//     //         bankStatement: bankpath,
+//     //         otherDocument: otherDocsPath,
+//     //         added_by: userallData.user_name,
+//     //         added_on: currentTime,
+//     //         added_on1: new Date()
+//     //     });
+//     //     const defaulterResponseData = await defaulterData.save();
+//     //     // Response after successful save
+//     //     return res.status(200).json({ status: 1, msg: 'Defaulter added successfully', data: defaulterResponseData });
+//     // }
+
+//     // console.log(userIdArr.includes(userID))
+
+//     // if (!userIdArr.includes(userID)) {
+//     //     // Add the user_id to the defaulter record
+//     //     await DefaulterSchema.findByIdAndUpdate(
+//     //         { _id: defaulterData._id },
+//     //         { $push: { user_id: userID } }
+//     //     );
+//     //     return res.status(200).json({ status: 1, msg: 'User ID added to defaulter successfully' });
+//     // }
+//     // console.log(dfaulterData[0]._id.toString());
+//     // If user_id is already present, update CIBIL score or take other actions
+//     // await DefaulterSchema.findByIdAndUpdate(
+//     //     { _id: defaulterData[0]._id.toString() },
+//     //     { $inc: { cibil_score: -10 } }, // Decrease CIBIL score
+//     //     { new: true }
+//     // );
+
+//     // return res.status(200).json({ status: 1, msg: 'CIBIL score decreased due to repeated entry' });
+
+//     // if (!userIdArr.includes(userID)) {
+//     //     await DefaulterSchema.findByIdAndUpdate({ _id: defaulterData[0]._id.toString() }, { $push: { [`user_id`]: userID } })
+//     // }
+
+
+
+//     // res.send("defaluter found");
+
+//     // Validate file uploads
+//     // if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
+//     // if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
+
+    
+// };
+
+exports.AddDefaulterByUser = async (req,res)=>{
+
+    // const {gst_no,pan_card_no,user_id}=req.body;
     const { user_id, defaulter_name, mobile_No, aadhar_card, address, city, state, firm_name, gst_no, pan_card_no, pending_amount, remark } = req.body;
     const bankStatement = req.files?.bankStatement?.[0]?.filename;
     const otherDocs = req.files?.otherDocs?.[0]?.filename;
     const bankpath = '/upload/' + bankStatement;
     const otherDocsPath = '/upload/' + otherDocs;
-    // console.log(bankStatement);
-
-    // user data information by user id
-    const userallData = await user_schema.findOne({ _id: user_id });
-    const currentTime=new Date();
-
-
-    // check defaulter defaulter avilable
-    // const defaulterData=await  DefaulterSchema.find({gst_no:})
-    
 
     // Validate file uploads
     if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please Upload bank Statement" });
     if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please Upload Other Document" });
+    
+    // check defaulter 
+    const defaulterData = await DefaulterSchema.find({ gst_no, pan_card_no })
 
-    try {
-        const defaulterData = new DefaulterSchema({user_id, defaulter_name, mobile_No, aadhar_card, address, city, state, firm_name, gst_no, pan_card_no, pending_amount: pending_amount, remark, bankStatement: bankpath, otherDocument: otherDocsPath , added_by :userallData.user_name , added_on : currentTime
-        });
-        const defaulterResponseData = await defaulterData.save();
-        // Response after successful save
-        return res.status(200).json({status:1, msg: 'Defaulter added successfully', data: defaulterResponseData });
-    } catch (error) {
-        console.error('Error adding defaulter:', error);
-        if (error.errors.aadhar_card.valueType == "string") {
-            return res.status(409).json({ status: 0, msg: 'Please Enter Valid aadhar card ' });
-        }
-        return res.status(500).json({ msg: 'Error adding defaulter' });
+    console.log(defaulterData[0]._id.toString())
+    
+    // when defaulter exits get user id
+    if(defaulterData){
+            const userIdArr=defaulterData[0].user_id
+            await DefaulterSchema.findByIdAndUpdate({ _id: defaulterData[0]._id.toString() }, { $push: { [`user_id`]: user_id } })
+            await DefaulterSchema.findByIdAndUpdate({ _id: defaulterData[0]._id.toString() },{ $inc: { cibil_score: -25 } }, { new: true });
+            return res.status(200).json({ status: 1, msg: 'Defaulter added successfully', data: defaulterResponseData });
+         
+    }else{
+        // add new defaulter
+        const defaulterData = new DefaulterSchema({
+                    user_id: [user_id],
+                    defaulter_name,
+                    mobile_No,
+                    aadhar_card,
+                    address,
+                    city,
+                    state,
+                    firm_name,
+                    gst_no,
+                    pan_card_no,
+                    pending_amount: pending_amount,
+                    remark,
+                    bankStatement: bankpath,
+                    otherDocument: otherDocsPath,
+                    added_by: userallData.user_name,
+                    added_on: currentTime,
+                    added_on1: new Date()
+                });
+                const defaulterResponseData = await defaulterData.save();
+                // Response after successful save
+                if(defaulterResponseData){
+                    return res.status(200).json({ status: 1, msg: 'Defaulter added successfully', data: defaulterResponseData });
+                }
+                return res.status(500).json({ status:500, msg: 'Defaulter not added successfully'});
     }
-};
+    
+   
+
+}
 
 
 // Get  all  list of defaulter
@@ -113,3 +242,36 @@ exports.ClearDefaulterCibilScore = async (req, res) => {
     // }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// try {
+    //     const defaulterData = new DefaulterSchema({user_id, defaulter_name, mobile_No, aadhar_card, address, city, state, firm_name, gst_no, pan_card_no, pending_amount: pending_amount, remark, bankStatement: bankpath, otherDocument: otherDocsPath , added_by :userallData.user_name , added_on : currentTime
+    //     });
+    //     const defaulterResponseData = await defaulterData.save();
+    //     // Response after successful save
+    //     return res.status(200).json({status:1, msg: 'Defaulter added successfully', data: defaulterResponseData });
+    // } catch (error) {
+    //     console.error('Error adding defaulter:', error);
+    //     if (error.errors.aadhar_card.valueType == "string") {
+    //         return res.status(409).json({ status: 0, msg: 'Please Enter Valid aadhar card ' });
+    //     }
+    //     return res.status(500).json({ msg: 'Error adding defaulter' });
+    // }
