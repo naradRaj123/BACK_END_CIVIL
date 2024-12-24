@@ -114,10 +114,9 @@ const user_schema = require('../../modal/UserModal');
     
 // };
 
+// add defaulter by user id 2nd fn 
 exports.AddDefaulterByUser = async (req,res)=>{
 
-    // const {gst_no,pan_card_no,user_id}=req.body;
-    // const { user_id, defaulter_name, mobile_No, aadhar_card, address, city, state, firm_name, gst_no, pan_card_no, pending_amount, remark } = req.body;
     try {
         const {
           user_id,
@@ -133,7 +132,10 @@ exports.AddDefaulterByUser = async (req,res)=>{
           pending_amount,
           remark
         } = req.body;
-    
+
+        const userdata=await user_schema.findOne({_id:user_id});
+        
+        // console.log(userdata);
         const bankStatement = req.files?.bankStatement?.[0]?.filename;
         const otherDocs = req.files?.otherDocs?.[0]?.filename;
     
@@ -162,7 +164,6 @@ exports.AddDefaulterByUser = async (req,res)=>{
               { new: true }
             );
           }
-    
           return res.status(200).json({ status: 1, msg: "Defaulter updated successfully" });
         } else {
           // Add new defaulter if it doesn't exist
@@ -182,7 +183,7 @@ exports.AddDefaulterByUser = async (req,res)=>{
             remark,
             bankStatement: bankpath,
             otherDocument: otherDocsPath,
-            added_by: req.user?.user_name || "System", // Assuming you have `req.user`
+            added_by: userdata.user_name || "System", // Assuming you have `req.user`
             added_on: currentTime,
             added_on1: currentTime
           });
