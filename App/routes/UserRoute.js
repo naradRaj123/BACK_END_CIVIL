@@ -18,6 +18,6 @@ router.post('/forgot-password',UserController.ForgotPassword);
 router.post('/verifyOtp',UserController.verifyOtp);
 router.post('/resendOtp',UserController.ResendOtp);
 router.post('/changePassword',UserController.ChangePassword);
-router.post('/useruplodimg',singleUpload.single('userImg'),UserController.UserImageUdateById);
+router.post('/useruplodimg/:id?',singleUpload.single('userImg'),UserController.UserImageUdateById);
 
 module.exports=router

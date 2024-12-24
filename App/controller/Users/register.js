@@ -1,8 +1,10 @@
+require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwttoken = require('jsonwebtoken');
 const nodeMailer = require('nodemailer');
 const user_schema = require('../../modal/UserModal');
-const fs=require('fs')
+const fs = require('fs');
+const { reset } = require('nodemon');
 
 // HOME PAGE API
 exports.homepage = async (req, res) => {
@@ -47,10 +49,10 @@ exports.ListofUsers = async (req, res) => {
         if (userdata.length > 0) {
             return res.status(200).json({ status: 1, userdata })
         } else {
-            return res.status(200).json({ status: 0, msg: "Student Not Avilable" })
+            return res.status(200).json({ status: 0, msg: "user not found" })
         }
     } catch (error) {
-        return res.status(404).json({ status: 0, msg: "Something went to wrong Please try again" })
+        return res.status(404).json({ status: 0, msg: "something went to wrong Please try again" })
     }
 }
 
@@ -81,7 +83,7 @@ exports.UserInfoById = async (req, res) => {
         if (!userData) {
             return res.status(404).json({ status: false, msg: "user not found. please check the id.", });
         }
-        return res.status(200).json({ status: 1, userData, });
+        return res.status(200).json({ status: 1, userData, staticPath: process.env.STATIC_IMAGEPATH });
     } catch (error) {
         if (error?.kind === 'ObjectId') {
             return res.status(400).json({ status: false, msg: "Invalid user ID format. Please check the ID.", });
@@ -288,8 +290,8 @@ exports.ChangePassword = async (req, res) => {
         // console.log(hashNewPassword);
         // user update 
         const userUpdateData = await user_schema.updateOne({ _id: userData._id.toString() }, { $set: { password: hashNewPassword } })
-        if(userUpdateData){
-            return res.send({status:200,msg:"password changed successfully."})
+        if (userUpdateData) {
+            return res.send({ status: 200, msg: "password changed successfully." })
         }
 
     } catch (error) {
@@ -303,8 +305,9 @@ exports.ChangePassword = async (req, res) => {
 exports.UserImageUdateById = async (req, res) => {
     const user_id = req.params.id;
     const userImgName = req.file?.filename; // Correct for single upload
-    console.log(userImgName)
-    const imagePath='user-img/'+userImgName;
+
+    const imagePath = 'user-img/' + userImgName;
+
     if (!user_id) {
         fs.unlink(imagePath, (err) => {
             if (err) {
@@ -316,25 +319,41 @@ exports.UserImageUdateById = async (req, res) => {
         return res.status(400).send({ status: false, msg: "Please enter a valid user ID" });
     }
     if (!userImgName) return res.status(400).send({ status: false, msg: "No image file uploaded" });
-    
+
     try {
         const userData = await user_schema.findOne({ _id: user_id });
         if (!userData) return res.status(404).send({ status: false, msg: "User not found" });
-        // upload images in database
-        const uploadData=await user_schema.findByIdAndUpdate({_id:user_id},{$set:{user_img:imagePath}},{ new: true });
-        console.log(uploadData);
-        if(!uploadData) return res.status(200).json({status:403,msg:"image  uploaded fail!"})
-        if(uploadData) return res.status(200).json({status:200,msg:"image sucessfully uploaded!"})
+
+        // check image old image of user
+        console.log(userData.user_img === null);
+        if (userData.user_img === null) {
+            // upload images in database
+            const uploadData = await user_schema.findByIdAndUpdate({ _id: user_id }, { $set: { user_img: imagePath } }, { new: true });
+            if (!uploadData) return res.status(200).json({ status: 403, msg: "image  uploaded fail!" })
+            if (uploadData) return res.status(200).json({ status: 200, msg: "image sucessfully uploaded!" })
+        }
+        else{
+           
+            // when already image exits 
+            const userImage=userData.user_img;
+
+            res.send("this is controller");
+
+        }
+
+
+
+        res.send("this is image upload controller");
 
     } catch (error) {
-             // Get the full path of the uploaded file
-            fs.unlink(imagePath, (err) => {
-                if (err) {
-                    console.error("Failed to delete image:", err);
-                } else {
-                    console.log("Image deleted due to error in database update");
-                }
-            });
+        // Get the full path of the uploaded file
+        fs.unlink(imagePath, (err) => {
+            if (err) {
+                console.error("Failed to delete image:", err);
+            } else {
+                console.log("Image deleted due to error in database update");
+            }
+        });
         return res.status(500).send({ status: false, msg: "Something went wrong. Please try again later." });
     }
 };
