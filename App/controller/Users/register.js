@@ -83,7 +83,7 @@ exports.UserInfoById = async (req, res) => {
         if (!userData) {
             return res.status(404).json({ status: false, msg: "user not found. please check the id.", });
         }
-        return res.status(200).json({ status: 1, userData, staticPath: process.env.STATIC_IMAGEPATH });
+        return res.status(200).json({ status: 1, userData, staticPath: "https://back-end-civil.onrender.com/" });
     } catch (error) {
         if (error?.kind === 'ObjectId') {
             return res.status(400).json({ status: false, msg: "Invalid user ID format. Please check the ID.", });
