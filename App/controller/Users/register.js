@@ -335,8 +335,9 @@ exports.UserImageUdateById = async (req, res) => {
         else{
            
             // when already image exits 
-            const userImage=userData.user_img;
-            res.send("this is controller");
+            const uploadData = await user_schema.findByIdAndUpdate({ _id: user_id }, { $set: { user_img: imagePath } }, { new: true });
+            if (!uploadData) return res.status(200).json({ status: 403, msg: "image  uploaded fail!" })
+            if (uploadData) return res.status(200).json({ status: 200, msg: "image sucessfully uploaded!" })
 
         }
         // res.send("this is image upload controller");
