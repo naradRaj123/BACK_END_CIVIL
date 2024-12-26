@@ -305,7 +305,7 @@ exports.ChangePassword = async (req, res) => {
 exports.UserImageUdateById = async (req, res) => {
     const user_id = req.params.id;
     const userImgName = req.file?.filename; // Correct for single upload
-
+    console.log(userImgName);
     const imagePath = 'user-img/' + userImgName;
 
     if (!user_id) {
@@ -336,14 +336,10 @@ exports.UserImageUdateById = async (req, res) => {
            
             // when already image exits 
             const userImage=userData.user_img;
-
             res.send("this is controller");
 
         }
-
-
-
-        res.send("this is image upload controller");
+        // res.send("this is image upload controller");
 
     } catch (error) {
         // Get the full path of the uploaded file
