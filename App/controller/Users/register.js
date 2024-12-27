@@ -96,13 +96,16 @@ exports.UserInfoById = async (req, res) => {
 
 // user edit by id 
 exports.EditByUserId = async (req, res) => {
-    const { user_id, user_name, gst_no, pan_no, firm_name, mobile_no } = req.body;
+    const { user_id, user_name, gst_no, pan_no, firm_name, mobile_no , address,city,state } = req.body;
     const updateData = {};
     if (user_name) updateData.user_name = user_name;
     if (gst_no) updateData.gst_no = gst_no;
     if (pan_no) updateData.pan_no = pan_no;
     if (firm_name) updateData.firm_name = firm_name;
     if (mobile_no) updateData.mobile_no = mobile_no;
+        updateData.address=address;
+        updateData.state=state;
+        updateData.city=city;
     const result = await user_schema.updateOne(
         { _id: user_id }, // Query to match the document
         { $set: updateData } // Update operation
