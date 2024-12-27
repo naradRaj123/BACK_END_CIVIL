@@ -13,7 +13,7 @@ exports.homepage = async (req, res) => {
 
 // USER REGISTER API
 exports.userRegister = async (req, res) => {
-    const { gst_no, pan_no, firm_name, user_name, mobile_no, email, password } = req.body;
+    const { gst_no, pan_no, firm_name, user_name, mobile_no, email, password ,business_type ,country,state,address , city } = req.body;
     if (gst_no == "" || firm_name == "" || user_name == "" || mobile_no == "" || email == "" || password == "") {
         return res.status(409).json({ status: 0, msg: 'All field are Required' });
     }
@@ -25,7 +25,7 @@ exports.userRegister = async (req, res) => {
     const salthRound = 10;
     const hashPassword = await bcrypt.hash(password, salthRound);
     try {
-        let userData = new user_schema({ gst_no, pan_no, firm_name, user_name, mobile_no, email, password: hashPassword })
+        let userData = new user_schema({ gst_no, pan_no, firm_name, user_name, mobile_no, email, password: hashPassword ,business_type ,country , state ,address ,city })
         const userResponse = await userData.save()
             .then((insertdata) => {
                 // send mail

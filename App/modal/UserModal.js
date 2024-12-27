@@ -60,6 +60,14 @@ const UserRegisterSchema=new mongoose.Schema({
         type:String,
         default:null,
     },
+    address:{
+        type:String,
+        default:null
+    },
+    city:{
+        type:String,
+        default:null
+    }
 },{
     timeseries:true,
 });
