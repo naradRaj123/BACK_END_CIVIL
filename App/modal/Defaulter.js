@@ -55,6 +55,11 @@ const DefaulterSchema=new mongooes.Schema({
         type:String,
         require:true
     },
+    country:{
+        type:String,
+        default:null,
+        require:true
+    },
     remark:{
         type:String,
         default:null
