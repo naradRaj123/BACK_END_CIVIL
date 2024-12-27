@@ -334,6 +334,20 @@ exports.UserImageUdateById = async (req, res) => {
         }
         else{
            
+            // get user data from database 
+            const userAllData=await user_schema.findById({_id:user_id});
+    
+            // remove image from folder
+            const imageOldpath='https://back-end-civil.onrender.com/'+userAllData.user_img;
+
+            fs.unlink(imageOldpath, (err) =>{
+                if (err) {
+                    console.error("Failed to delete image:", err);
+                } else {
+                    console.log("Image deleted due to error in database update");
+                }
+            })
+
             // when already image exits 
             const uploadData = await user_schema.findByIdAndUpdate({ _id: user_id }, { $set: { user_img: imagePath } }, { new: true });
             if (!uploadData) return res.status(200).json({ status: 403, msg: "image  uploaded fail!" })

@@ -48,6 +48,18 @@ const UserRegisterSchema=new mongoose.Schema({
         type:Number,
         default:null,
     },
+    business_type:{
+        type:String,
+        default:null
+    },
+    country:{
+        type:String,
+        default:null
+    },
+    state:{
+        type:String,
+        default:null,
+    },
 },{
     timeseries:true,
 });
