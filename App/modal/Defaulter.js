@@ -74,7 +74,7 @@ const DefaulterSchema=new mongooes.Schema({
     },
     cibil_score:{
         type:Number,
-        default:100,
+        default:75,
     },
     clear_score:{
         type:Number,

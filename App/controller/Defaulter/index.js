@@ -218,17 +218,17 @@ exports.listOfDefaulter = async (req, res) => {
 exports.infoDefaulterByUserId = async (req, res) => {
     const { user_id } = req.body;
     const DefaulterData = await DefaulterSchema.find({ user_id: user_id });
-   res.send(DefaulterData);
+   
     // extrack data from db by user id
-    // try {
-    //     if (DefaulterData) {
-    //         return res.status(200).json({ status: 1, data: DefaulterData});
-    //     } else {
-    //         return res.status(404).json({ status: 0, Message: "Defaulter Not Found Found" })
-    //     }
-    // } catch (error) {
-    //     return res.status(500).json({ status: 0, message: "Something went to wrong ! Please try Again" })
-    // }
+    try {
+        if (DefaulterData) {
+            return res.status(200).json({ status: 1, data: DefaulterData});
+        } else {
+            return res.status(404).json({ status: 0, Message: "Defaulter Not Found Found" })
+        }
+    } catch (error) {
+        return res.status(500).json({ status: 0, message: "Something went to wrong ! Please try Again" })
+    }
 }
 
 
