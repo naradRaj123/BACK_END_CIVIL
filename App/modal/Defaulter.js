@@ -12,9 +12,9 @@ const DefaulterSchema=new mongooes.Schema({
         default:null,
     },
     added_by:{
-        type:String,
+        type:[String],
         require:true,
-        default:null,
+        default:["system"],
     },
     firm_name:{
         type:String,
