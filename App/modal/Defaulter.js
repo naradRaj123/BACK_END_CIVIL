@@ -1,8 +1,22 @@
+const { default: mongoose } = require('mongoose');
 const mongooes=require('mongoose');
+
+
+// Sub-schema for user_id objects
+const UserIdSchema = new mongoose.Schema(
+    {
+      id: { type: String, required: true }, // Unique user ID
+      added_by: { type: String, required: true }, // Who added this user
+      date_added: { type: Date, default: Date.now }, // When this entry was added
+    },
+    { _id: false } // Disable automatic _id creation for subdocuments
+  );
+  
+
 
 const DefaulterSchema=new mongooes.Schema({
     user_id:{
-        type:[String],
+        type:[UserIdSchema],
         require:true,
         default:[]
     },
