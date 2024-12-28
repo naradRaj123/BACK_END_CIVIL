@@ -130,7 +130,8 @@ exports.AddDefaulterByUser = async (req,res)=>{
           gst_no,
           pan_card_no,
           pending_amount,
-          remark
+          remark,
+          country
         } = req.body;
 
         const userdata=await user_schema.findOne({_id:user_id});
@@ -181,9 +182,10 @@ exports.AddDefaulterByUser = async (req,res)=>{
             pan_card_no,
             pending_amount,
             remark,
+            country,
             bankStatement: bankpath,
             otherDocument: otherDocsPath,
-            added_by: userdata.user_name || "System", // Assuming you have `req.user`
+            added_by:[userdata.firm_name] , // Assuming you have `req.user`
             added_on: currentTime,
             added_on1: currentTime
           });
@@ -216,16 +218,17 @@ exports.listOfDefaulter = async (req, res) => {
 exports.infoDefaulterByUserId = async (req, res) => {
     const { user_id } = req.body;
     const DefaulterData = await DefaulterSchema.find({ user_id: user_id });
+   res.send(DefaulterData);
     // extrack data from db by user id
-    try {
-        if (DefaulterData) {
-            return res.status(200).json({ status: 1, data: DefaulterData, staticPath: "https://back-end-civil.onrender.com/" });
-        } else {
-            return res.status(404).json({ status: 0, Message: "Defaulter Not Found Found" })
-        }
-    } catch (error) {
-        return res.status(500).json({ status: 0, message: "Something went to wrong ! Please try Again" })
-    }
+    // try {
+    //     if (DefaulterData) {
+    //         return res.status(200).json({ status: 1, data: DefaulterData});
+    //     } else {
+    //         return res.status(404).json({ status: 0, Message: "Defaulter Not Found Found" })
+    //     }
+    // } catch (error) {
+    //     return res.status(500).json({ status: 0, message: "Something went to wrong ! Please try Again" })
+    // }
 }
 
 
