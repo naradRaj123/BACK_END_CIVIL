@@ -132,7 +132,8 @@ exports.AddDefaulterByUser = async (req,res)=>{
         const otherDocsPath = '/upload/' + otherDocs;
 
         // Check if the defaulter exists
-        const defaulterData = await DefaulterSchema.findOne({ gst_no, pan_card_no });
+        // const defaulterData = await DefaulterSchema.findOne({ gst_no, pan_card_no });
+        const defaulterData = await DefaulterSchema.findOne({ $or: [{ gst_no: gst_no }, { pan_card_no: pan_card_no }] });
 
         if (defaulterData) {
           // Defaulter exists; check user_id and update
@@ -141,7 +142,7 @@ exports.AddDefaulterByUser = async (req,res)=>{
           if (!userIdArr.includes(user_id)) {
             // Push user_id and update cibil_score if user_id is not present
 
-            if(25 > defaulterData.cibil_score){
+            if(defaulterData.cibil_score > 75 || defaulterData.cibil_score >= 50  ){
             await DefaulterSchema.findByIdAndUpdate(
               defaulterData._id,{ 
                 $push: { user_id: user_id , added_by: userdata.user_name },$inc: { cibil_score: -25 } 
