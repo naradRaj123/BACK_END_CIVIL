@@ -21,6 +21,11 @@ const DefaulterSchema = new mongoose.Schema({
     required: true,
     default: null,
   },
+  firm_name:{
+    type:String,
+    require:true,
+    default:null
+  },
   mobile_No: {
     type: Number,
     required: true,
