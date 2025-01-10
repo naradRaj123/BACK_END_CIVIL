@@ -453,14 +453,48 @@ exports.SearchDefaulterData = async (req, res) => {
 // defaulter cibil score clean apis
 exports.ClearDefaulterCibilScore = async (req, res) => {
   const { user_id, defaulter_id } = req.body;
-  if (!user_id) return res.status(400).json({ status: 0, Message: "User Id Not found" })
-  if (!defaulter_id) return res.status(400).json({ status: 0, Message: "Defaulter  Id Not found" })
-  res.send("clear score of cibil ")
-  // try {
+  
+  if (!user_id) return res.status(400).json({ status: 0, Message: "user  id not found !" }) ;
+  if (!defaulter_id) return res.status(400).json({ status: 0, Message: "Defaulter  Id Not found" }) ;
 
-  // } catch (error) {
-  //     return res.status(500).json({ status: 0, Message: "Something Wrong Please try Again !" })
-  // }
+  try {
+
+    // get defaluter data 
+    const defaulterData=await DefaulterSchema.findById({_id:defaulter_id.toString()});
+    
+    // check user id match in defaulter list
+    if(!defaulterData.user_id.includes(user_id)){
+        return res.send({status:0,Message:"No match found. User score remains unchanged."})
+    }
+
+    const defaulterDataInUserId=defaulterData.user_id;
+  
+    for (const [index, value] of defaulterDataInUserId.entries()) {
+      if (value === user_id) {
+        if(100 < defaulterData.cibil_score){
+         const result = await DefaulterSchema.findByIdAndUpdate({ _id: defaulterData._id }, 
+            { 
+              $set: { cibil_score: defaulterData.cibil_score + 25 } ,
+              $pull:{user_id:user_id}
+          });
+          if(result) return res.send({status:200,Messasge:"successfully  clear score !"})
+        }else{
+         const result2= await DefaulterSchema.findByIdAndUpdate({ _id: defaulterData._id }, 
+            { 
+              $pull:{user_id:user_id}
+          });
+          if(result2) return res.send({status:200,Messasge:"successfully  clear score !"})
+        }
+      }
+  }
+    
+  } catch (error) {
+    return res.send({status:0,Message:"Something went to wrong please try sometime"});  
+  }
+
+
+  
+ 
 
 }
 

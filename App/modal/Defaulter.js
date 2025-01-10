@@ -90,8 +90,8 @@ const DefaulterSchema = new mongoose.Schema({
     default: Date.now,
   },
   added_by:{
-    type:String,
-    default:null
+    type:[String],
+    default:[]
   },
 });
 
