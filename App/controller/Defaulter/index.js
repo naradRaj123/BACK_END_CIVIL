@@ -121,8 +121,6 @@ exports.AddDefaulterByUser = async (req,res)=>{
         const userdata=await user_schema.findOne({_id:user_id});
         if(userdata==null) return res.send("user id not valid");
         
-        console.log(userdata.user_name);
-        
         const bankStatement = req.files?.bankStatement?.[0]?.filename;
         const otherDocs = req.files?.otherDocs?.[0]?.filename;
 
@@ -136,23 +134,25 @@ exports.AddDefaulterByUser = async (req,res)=>{
         // Check if the defaulter exists
         const defaulterData = await DefaulterSchema.findOne({ gst_no, pan_card_no });
 
-        console.log(defaulterData);
-
         if (defaulterData) {
           // Defaulter exists; check user_id and update
           const userIdArr = defaulterData.user_id || [{}];
-          console.log(userIdArr)
-          console.log((!userIdArr.includes(user_id)))
+          
           if (!userIdArr.includes(user_id)) {
             // Push user_id and update cibil_score if user_id is not present
+
+            if(25 > defaulterData.cibil_score){
             await DefaulterSchema.findByIdAndUpdate(
-              defaulterData._id,
-              { 
-                $push: { user_id: user_id , added_by: userdata.firm_name },
-                $inc: { cibil_score: -25 } 
-              },
-              { new: true }
+              defaulterData._id,{ 
+                $push: { user_id: user_id , added_by: userdata.user_name },$inc: { cibil_score: -25 } 
+              },{ new: true }
             );
+          }else{
+            await DefaulterSchema.findByIdAndUpdate(
+              defaulterData._id,{ 
+                $push: { user_id: user_id , added_by: userdata.user_name },},{ new: true }
+            );
+          }
           }
           return res.status(200).json({ status: 1, msg: "Defaulter updated successfully" });
         } else {
@@ -178,9 +178,7 @@ exports.AddDefaulterByUser = async (req,res)=>{
             added_on: currentTime,
             added_on1: currentTime
           });
-
           const defaulterResponseData = await defaulterData.save();
-
           return res.status(200).json({ status: 1, msg: "Defaulter added successfully", data: defaulterResponseData });
         }
       } catch (error) {

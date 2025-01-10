@@ -89,6 +89,10 @@ const DefaulterSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  added_by:{
+    type:String,
+    default:null
+  },
 });
 
 // Create the model
