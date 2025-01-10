@@ -146,7 +146,7 @@ exports.AddDefaulterByUser = async (req,res)=>{
 
         // Validate file uploads
         if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please upload bank statement" });
-        if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please upload other document" });
+        // if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please upload other document" });
 
         const bankpath = '/upload/' + bankStatement;
         const otherDocsPath = '/upload/' + otherDocs;
