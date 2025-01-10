@@ -174,7 +174,7 @@ exports.AddDefaulterByUser = async (req,res)=>{
             country,
             bankStatement: bankpath,
             otherDocument: otherDocsPath,
-            added_by:[userdata.user_name] , // Assuming you have `req.user`
+            added_by:[userdata.firm_name] , // Assuming you have `req.user`
             added_on: currentTime,
             added_on1: currentTime
           });
