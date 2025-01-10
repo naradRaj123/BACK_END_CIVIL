@@ -1,107 +1,91 @@
-const { default: mongoose } = require('mongoose');
-const mongooes=require('mongoose');
+const mongoose = require('mongoose');
 
+// Define the sub-schema for user_id objects
+// const UserIdSchema = new mongoose.Schema(
+//   {
+//     id: { type: mongoose.Schema.Types.ObjectId, required: true }, // User ID
+//     added_by: { type: String, required: true }, // User who added this ID
+//   },
+//   { _id: false } 
+// );
 
-// Sub-schema for user_id objects
-const UserIdSchema = new mongoose.Schema(
-    {
-      id: { type: String, required: true }, // Unique user ID
-      added_by: { type: String, required: true }, // Who added this user
-      date_added: { type: Date, default: Date.now }, // When this entry was added
-    },
-    { _id: false } // Disable automatic _id creation for subdocuments
-  );
-  
-
-
-const DefaulterSchema=new mongooes.Schema({
-    user_id:{
-        type:[UserIdSchema],
-        require:true,
-        default:[]
-    },
-    defaulter_name:{
-        type:String,
-        require:true,
-        default:null,
-    },
-    added_by:{
-        type:[String],
-        require:true,
-        default:["system"],
-    },
-    firm_name:{
-        type:String,
-        require:true,
-        default:null
-    },
-    mobile_No:{
-        type:Number,
-        require:true,
-        unique: true,
-        default:null
-    },
-    gst_no:{
-        type:String,
-        require:true,
-    },
-    pan_card_no:{
-        type:String,
-        require:true,
-    },
-    aadhar_card:{
-        type:Number,
-        require:true,
-    },
-    pending_amount:{
-        type:Number,
-        require:true,
-    },
-    address:{
-        type:String,
-        require:true,
-    },
-    city:{
-        type:String,
-        require:true,
-    },
-    state:{
-        type:String,
-        require:true
-    },
-    country:{
-        type:String,
-        default:null,
-        require:true
-    },
-    remark:{
-        type:String,
-        default:null
-    },
-    bankStatement:{
-        type:String,
-        default:true,
-    },
-    otherDocument:{
-        type:String,
-        require:true,        
-    },
-    cibil_score:{
-        type:Number,
-        default:75,
-    },
-    clear_score:{
-        type:Number,
-        default:true,
-    },
-    added_on:{
-        type:String,
-        default:null,
-    }
-    
-},{
-    timeseries:true
+// Define the main schema
+const DefaulterSchema = new mongoose.Schema({
+  user_id: {
+    type: [String], // Array of objects using the UserIdSchema
+    required: true,
+    default: [], // Default to an empty array
+  },
+  defaulter_name: {
+    type: String,
+    required: true,
+    default: null,
+  },
+  mobile_No: {
+    type: Number,
+    required: true,
+    unique: true,
+    default: null,
+  },
+  gst_no: {
+    type: String,
+    required: true,
+  },
+  pan_card_no: {
+    type: String,
+    required: true,
+  },
+  aadhar_card: {
+    type: Number,
+    required: true,
+  },
+  pending_amount: {
+    type: Number,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  country: {
+    type: String,
+    required: true,
+    default: null,
+  },
+  remark: {
+    type: String,
+    default: null,
+  },
+  bankStatement: {
+    type: String,
+    default: null,
+  },
+  otherDocument: {
+    type: String,
+    required: true,
+  },
+  cibil_score: {
+    type: Number,
+    default: 75,
+  },
+  clear_score: {
+    type: Number,
+    default: 1,
+  },
+  added_on: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-const Defaulter_Schema=mongooes.model('defaulter',DefaulterSchema);
-module.exports=Defaulter_Schema;
+// Create the model
+const DefaulterModel = mongoose.model('Defaulter', DefaulterSchema);
+module.exports = DefaulterModel;
