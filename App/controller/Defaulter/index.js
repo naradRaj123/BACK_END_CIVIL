@@ -121,19 +121,21 @@ exports.AddDefaulterByUser = async (req,res)=>{
         const userdata=await user_schema.findOne({_id:user_id});
         if(userdata==null) return res.send("user id not valid");
         
-        const bankStatement = req.files?.bankStatement?.[0]?.filename;
-        const otherDocs = req.files?.otherDocs?.[0]?.filename;
+        const firmNameofUser=userdata.firm_name;
+
+        // const bankStatement = req.files?.bankStatement?.[0]?.filename;
+        // const otherDocs = req.files?.otherDocs?.[0]?.filename;
 
         // Validate file uploads
-        if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please upload bank statement" });
+        // if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please upload bank statement" });
         // if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please upload other document" });
 
-        const bankpath = 'upload/' + bankStatement;
-        const otherDocsPath = 'upload/' + otherDocs;
+        // const bankpath = 'upload/' + bankStatement;
+        // const otherDocsPath = 'upload/' + otherDocs;
 
         // Check if the defaulter exists
         // const defaulterData = await DefaulterSchema.findOne({ gst_no, pan_card_no });
-        const defaulterData = await DefaulterSchema.findOne({ $or: [{ gst_no: gst_no }, { pan_card_no: pan_card_no }] });
+        // const defaulterData = await DefaulterSchema.findOne({ $or: [{ gst_no: gst_no }, { pan_card_no: pan_card_no }] });
 
         if (defaulterData) {
           // Defaulter exists; check user_id and update
@@ -175,7 +177,7 @@ exports.AddDefaulterByUser = async (req,res)=>{
             country,
             bankStatement: bankpath,
             otherDocument: otherDocsPath,
-            added_by:[userdata.firm_name] , // Assuming you have `req.user`
+            added_by:[firmNameofUser] , // Assuming you have `req.user`
             added_on: currentTime,
             added_on1: currentTime
           });
