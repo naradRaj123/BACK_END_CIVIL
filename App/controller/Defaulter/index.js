@@ -147,13 +147,13 @@ exports.AddDefaulterByUser = async (req,res)=>{
             if(defaulterData.cibil_score > 75 || defaulterData.cibil_score >= 50  ){
             await DefaulterSchema.findByIdAndUpdate(
               defaulterData._id,{ 
-                $push: { user_id: user_id , added_by: userdata.firmNameofUser },$inc: { cibil_score: -25 } 
+                $push: { user_id: user_id , added_by:firmNameofUser },$inc: { cibil_score: -25 } 
               },{ new: true }
             );
           }else{
             await DefaulterSchema.findByIdAndUpdate(
               defaulterData._id,{ 
-                $push: { user_id: user_id , added_by: userdata.firmNameofUser },},{ new: true }
+                $push: { user_id: user_id , added_by:firmNameofUser },},{ new: true }
             );
           }
           }
