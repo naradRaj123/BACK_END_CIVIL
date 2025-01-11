@@ -34,7 +34,7 @@ const DefaulterSchema = new mongoose.Schema({
   },
   gst_no: {
     type: String,
-    required: true,
+    default:null
   },
   pan_card_no: {
     type: String,
@@ -42,7 +42,7 @@ const DefaulterSchema = new mongoose.Schema({
   },
   aadhar_card: {
     type: Number,
-    required: true,
+    default:null
   },
   pending_amount: {
     type: Number,
