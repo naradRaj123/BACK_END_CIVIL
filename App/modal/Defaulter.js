@@ -89,6 +89,15 @@ const DefaulterSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  added_by_company:{
+    type:[{
+      user_added_id:{type:String, require:true},
+      remark:{type:String,require:true},
+      pending_amount:{type:Number, require:true},
+      added_date:{type:Date,default:Date.now}
+    }],
+    default:[{}]
+  },
   added_by:{
     type:[String],
     default:[]

@@ -100,97 +100,229 @@ const { default: mongoose } = require('mongoose');
 
 
 // add defaluter by user fn 2n working done
-exports.AddDefaulterByUser = async (req,res)=>{
-    try {
-        const {
-          user_id,
-          defaulter_name,
-          mobile_No,
-          aadhar_card,
-          address,
-          city,
-          state,
-          firm_name,
-          gst_no,
-          pan_card_no,
-          pending_amount,
-          remark,
-          country
-        } = req.body;
-        // user data by user id
-        const userdata=await user_schema.findOne({_id:user_id});
-        if(userdata==null) return res.send("user id not valid");
+// exports.AddDefaulterByUser = async (req,res)=>{
+//     try {
+//         const {
+//           user_id,
+//           defaulter_name,
+//           mobile_No,
+//           aadhar_card,
+//           address,
+//           city,
+//           state,
+//           firm_name,
+//           gst_no,
+//           pan_card_no,
+//           pending_amount,
+//           remark,
+//           country
+//         } = req.body;
+//         // user data by user id
+//         const userdata=await user_schema.findOne({_id:user_id});
+//         if(userdata==null) return res.send("user id not valid");
         
-        const firmNameofUser=userdata.firm_name;
+//         const firmNameofUser=userdata.firm_name;
 
-        const bankStatement = req.files?.bankStatement?.[0]?.filename;
-        const otherDocs = req.files?.otherDocs?.[0]?.filename;
+//         const bankStatement = req.files?.bankStatement?.[0]?.filename;
+//         const otherDocs = req.files?.otherDocs?.[0]?.filename;
 
-        // Validate file uploads
-        if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please upload bank statement" });
-        // if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please upload other document" });
+//         // Validate file uploads
+//         if (!bankStatement) return res.status(400).json({ status: 0, msg: "Please upload bank statement" });
+//         // if (!otherDocs) return res.status(400).json({ status: 0, msg: "Please upload other document" });
 
-        const bankpath = 'upload/' + bankStatement;
-        const otherDocsPath = 'upload/' + otherDocs;
+//         const bankpath = 'upload/' + bankStatement;
+//         const otherDocsPath = 'upload/' + otherDocs;
 
-        // Check if the defaulter exists
-        // const defaulterData = await DefaulterSchema.findOne({ gst_no, pan_card_no });
-        const defaulterData = await DefaulterSchema.findOne({ $or: [{ gst_no: gst_no }, { pan_card_no: pan_card_no }] });
+//         // Check if the defaulter exists
+//         // const defaulterData = await DefaulterSchema.findOne({ gst_no, pan_card_no });
+//         const defaulterData = await DefaulterSchema.findOne({ $or: [{ gst_no: gst_no }, { pan_card_no: pan_card_no }] });
 
-        if (defaulterData) {
-          // Defaulter exists; check user_id and update
-          const userIdArr = defaulterData.user_id || [{}];
+//         if (defaulterData) {
+//           // Defaulter exists; check user_id and update
+//           const userIdArr = defaulterData.user_id || [{}];
           
-          if (!userIdArr.includes(user_id)) {
-            // Push user_id and update cibil_score if user_id is not present
+//           if (!userIdArr.includes(user_id)) {
+//             // Push user_id and update cibil_score if user_id is not present
 
-            if(defaulterData.cibil_score > 75 || defaulterData.cibil_score >= 50  ){
-            await DefaulterSchema.findByIdAndUpdate(
-              defaulterData._id,{ 
-                $push: { user_id: user_id , added_by:firmNameofUser },$inc: { cibil_score: -25 } 
-              },{ new: true }
-            );
-          }else{
-            await DefaulterSchema.findByIdAndUpdate(
-              defaulterData._id,{ 
-                $push: { user_id: user_id , added_by:firmNameofUser },},{ new: true }
-            );
-          }
-          }
-          return res.status(200).json({ status: 1, msg: "Defaulter updated successfully" });
-        } else {
-          // Add new defaulter if it doesn't exist
-          const currentTime = new Date(); // Current time for added_on field
-          const defaulterData = new DefaulterSchema({
-            user_id: [user_id],
-            defaulter_name,
-            mobile_No,
-            aadhar_card,
-            address,
-            city,
-            state,
-            firm_name,
-            gst_no,
-            pan_card_no,
-            pending_amount,
+//             if(defaulterData.cibil_score > 75 || defaulterData.cibil_score >= 50  ){
+//             await DefaulterSchema.findByIdAndUpdate(
+//               defaulterData._id,{ 
+//                 $push: { user_id: user_id , added_by:firmNameofUser },$inc: { cibil_score: -25 } 
+//               },{ new: true }
+//             );
+//           }else{
+//             await DefaulterSchema.findByIdAndUpdate(
+//               defaulterData._id,{ 
+//                 $push: { user_id: user_id , added_by:firmNameofUser },},{ new: true }
+//             );
+//           }
+//           }
+//           return res.status(200).json({ status: 1, msg: "Defaulter updated successfully" });
+//         } else {
+//           // Add new defaulter if it doesn't exist
+//           const currentTime = new Date(); // Current time for added_on field
+//           const defaulterData = new DefaulterSchema({
+//             user_id: [user_id],
+//             defaulter_name,
+//             mobile_No,
+//             aadhar_card,
+//             address,
+//             city,
+//             state,
+//             firm_name,
+//             gst_no,
+//             pan_card_no,
+//             pending_amount,
+//             remark,
+//             country,
+//             bankStatement: bankpath,
+//             otherDocument: otherDocsPath,
+//             added_by:[firmNameofUser] , // Assuming you have `req.user`
+//             added_on: currentTime,
+//             added_on1: currentTimen
+//           });
+//           const defaulterResponseData = await defaulterData.save();
+//           return res.status(200).json({ status: 1, msg: "Defaulter added successfully", data: defaulterResponseData });
+//         }
+//       } catch (error) {
+//         console.error("Error adding defaulter:", error);
+//         return res.status(500).json({ status: 0, msg: "Internal Server Error", error: error.message });
+//       }
+
+
+// }
+
+
+// modify function for add defaulter in array of object
+exports.AddDefaulterByUser = async (req, res) => {
+  try {
+    const {
+      user_id,
+      defaulter_name,
+      mobile_No,
+      aadhar_card,
+      address,
+      city,
+      state,
+      firm_name,
+      gst_no,
+      pan_card_no,
+      pending_amount,
+      remark,
+      country,
+      company_id, // Added to map with added_by_company
+    } = req.body;
+
+    // Fetch user data by user_id
+    const userdata = await user_schema.findOne({ _id: user_id });
+    if (!userdata) return res.status(400).json({ status: 0, msg: "User ID is not valid" });
+
+    const firmNameofUser = userdata.firm_name;
+
+    // Handle file uploads
+    // const bankStatement = req.files?.bankStatement?.[0]?.filename;
+    // const otherDocs = req.files?.otherDocs?.[0]?.filename;
+
+    // // Validate file uploads
+    // if (!bankStatement) {
+    //   return res.status(400).json({ status: 0, msg: "Please upload bank statement" });
+    // }
+
+    // const bankpath = `upload/${bankStatement}`;
+    // const otherDocsPath = otherDocs ? `upload/${otherDocs}` : null;
+
+    // Check if the defaulter exists
+    const defaulterData = await DefaulterSchema.findOne({
+      $or: [{ gst_no }, { pan_card_no }],
+    });
+
+    // console.log(defaulterData.added_by_company.length);
+
+
+    if (defaulterData) {
+      // Defaulter exists; check user_id and update
+      const userIdArr = defaulterData.user_id || [];
+      const addedByCompanyArr = defaulterData.added_by_company || [];
+      // console.log(addedByCompanyArr);
+      addedByCompanyArr.map((v,i)=>{
+        console.log(v.user_added_id);
+      })
+      const companyExists = addedByCompanyArr.some(
+        (entry) => entry.company_id === company_id
+      );
+
+      if (!userIdArr.includes(user_id) || !companyExists) {
+        const updateData = {
+          $push: { user_id },
+        };
+
+        if (!companyExists) {
+          updateData.$push.added_by_company = {
+            user_added_id:user_id,
             remark,
-            country,
-            bankStatement: bankpath,
-            otherDocument: otherDocsPath,
-            added_by:[firmNameofUser] , // Assuming you have `req.user`
-            added_on: currentTime,
-            added_on1: currentTime
-          });
-          const defaulterResponseData = await defaulterData.save();
-          return res.status(200).json({ status: 1, msg: "Defaulter added successfully", data: defaulterResponseData });
+            pending_amount,
+            added_date: new Date(),
+          };
         }
-      } catch (error) {
-        console.error("Error adding defaulter:", error);
-        return res.status(500).json({ status: 0, msg: "Internal Server Error", error: error.message });
+
+        if (defaulterData.cibil_score > 75 || defaulterData.cibil_score >= 50) {
+          updateData.$inc = { cibil_score: -25 };
+        }
+
+        await DefaulterSchema.findByIdAndUpdate(defaulterData._id, updateData, { new: true });
       }
 
+      return res.status(200).json({ status: 1, msg: "Defaulter updated successfully" });
+    } else {
+      // Add new defaulter if it doesn't exist
+      const currentTime = new Date();
+      const defaulterData = new DefaulterSchema({
+        user_id: [user_id],
+        defaulter_name,
+        mobile_No,
+        aadhar_card,
+        address,
+        city,
+        state,
+        firm_name,
+        gst_no,
+        pan_card_no,
+        pending_amount,
+        remark,
+        country,
+        bankStatement: bankpath,
+        otherDocument: otherDocsPath,
+        added_by: [firmNameofUser],
+        added_on: currentTime,
+        added_by_company: [
+          {
+            user_added_id:user_id,
+            pending_amount,
+            remark,
+            added_date: currentTime,
+          },
+        ],
+      });
 
-}
+      const defaulterResponseData = await defaulterData.save();
+      return res.status(200).json({
+        status: 1,
+        msg: "Defaulter added successfully",
+        data: defaulterResponseData,
+      });
+    }
+  } catch (error) {
+    console.error("Error adding defaulter:", error);
+    return res.status(500).json({
+      status: 0,
+      msg: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+
+
 
 // exports.AddDefaulterByUser = async (req, res) => {
 //   try {
@@ -495,10 +627,41 @@ exports.ClearDefaulterCibilScore = async (req, res) => {
     return res.send({status:0,Message:"Something went to wrong please try sometime"});  
   }
 
+}
+
+
+
+// edit defaulter by user id
+exports.EditDefaulterByUserId=async(req,res)=>{
+  const {user_id,defaulter_id}=req.body;
+
+  const formData={
+    defaulter_name,
+    
+  }=req.body;
+
+  // check user id avilable in defaulter database
+  const dataOfDefaulter=await DefaulterSchema.findById({_id:defaulter_id})
+  if(!dataOfDefaulter) return res.send({status:false,message:"Defaulter not found"})
+  console.log(dataOfDefaulter.user_id.includes(user_id));
+  if(!dataOfDefaulter.user_id.includes(user_id)){
+    return res.send({status:false,message:"user not exits"})
+  }
+  
+  try{
+    // update query
+    const updateResult=await DefaulterSchema.findByIdAndUpdate({_id:defaulter_id},{$set:formData},{new:true})
+    if(!updateResult){
+      return res.send({status:false,message:"Update failed"}) 
+    }
+  return  res.send({status:200,message:"Update sucessfully"});
+  }
+  catch(error){
+    return  res.send({status:500,message:"Something went to wrong please try again !"})
+  }
 
   
- 
-
+  // res.send("this is edit controller");
 }
 
 

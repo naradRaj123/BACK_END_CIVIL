@@ -12,6 +12,7 @@ router.get('/defaluterlist',DefaulterController.listOfDefaulter);
 router.post('/listOfDefaulterById',DefaulterController.infoDefaulterByUserId);
 router.post('/search',DefaulterController.SearchDefaulterData);
 router.post('/cleanDefaulterScore',DefaulterController.ClearDefaulterCibilScore);
+router.post('/editDefaulter',DefaulterController.EditDefaulterByUserId);
 // router.post('/addD',DefaulterController.searchdefaulter)
 
 module.exports=router;
