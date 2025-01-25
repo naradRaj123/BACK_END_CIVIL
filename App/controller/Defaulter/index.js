@@ -220,16 +220,16 @@ exports.AddDefaulterByUser = async (req, res) => {
     const firmNameofUser = userdata.firm_name;
 
     // Handle file uploads
-    // const bankStatement = req.files?.bankStatement?.[0]?.filename;
-    // const otherDocs = req.files?.otherDocs?.[0]?.filename;
+    const bankStatement = req.files?.bankStatement?.[0]?.filename;
+    const otherDocs = req.files?.otherDocs?.[0]?.filename;
 
-    // // Validate file uploads
-    // if (!bankStatement) {
-    //   return res.status(400).json({ status: 0, msg: "Please upload bank statement" });
-    // }
+    // Validate file uploads
+    if (!bankStatement) {
+      return res.status(400).json({ status: 0, msg: "Please upload bank statement" });
+    }
 
-    // const bankpath = `upload/${bankStatement}`;
-    // const otherDocsPath = otherDocs ? `upload/${otherDocs}` : null;
+    const bankpath = `upload/${bankStatement}`;
+    const otherDocsPath = otherDocs ? `upload/${otherDocs}` : null;
 
     // Check if the defaulter exists
     const defaulterData = await DefaulterSchema.findOne({
