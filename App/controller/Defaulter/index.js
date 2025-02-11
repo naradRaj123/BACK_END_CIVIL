@@ -261,6 +261,7 @@ exports.AddDefaulterByUser = async (req, res) => {
             user_added_id:user_id,
             remark,
             pending_amount,
+            user_name:firmNameofUser,
             added_date: new Date(),
           };
         }
@@ -299,6 +300,7 @@ exports.AddDefaulterByUser = async (req, res) => {
             user_added_id:user_id,
             pending_amount,
             remark,
+            user_name:firmNameofUser,
             added_date: currentTime,
           },
         ],
